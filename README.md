@@ -13,26 +13,24 @@ Eine Unix-Shell in C++ — gebaut um zu verstehen, was wirklich passiert wenn ma
 
 ## Build
 
-<details>
-<summary>Voraussetzungen</summary>
-
 **macOS**
+
 ```bash
 brew install readline
+make
+./shell
 ```
 
 **Linux (Debian/Ubuntu)**
+
 ```bash
 sudo apt install libreadline-dev
-```
-
-</details>
-```bash
 make
 ./shell
 ```
 
 ## Benutzung
+
 ```bash
 shell > ls
 shell > ls | grep .cpp
@@ -45,6 +43,7 @@ shell > exit
 
 <details>
 <summary>Projektstruktur</summary>
+
 ```
 ├── main.cpp       # Hauptschleife
 ├── shell.h        # Deklarationen und Farb-Definitionen
