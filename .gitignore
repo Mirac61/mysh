@@ -1,0 +1,12 @@
+# Kompilierte Binary
+shell
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Test Dateien die du mit > erstellt hast
+*.txt
