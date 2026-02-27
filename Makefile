@@ -1,6 +1,6 @@
 CXX = g++
 FLAGS = -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include -lreadline
-SRCS = main.cpp ls.cpp parse.cpp execute.cpp
+SRCS = main.cpp ls.cpp parse.cpp execute.cpp config.cpp
 TARGET = shell
 
 all:
