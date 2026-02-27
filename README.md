@@ -11,10 +11,15 @@ Eine Unix-Shell in C++ — gebaut um zu verstehen, was wirklich passiert wenn ma
 - **Tab Autocomplete** — über readline
 - **`cd`** mit aktuellem Verzeichnis im Prompt
 
+## Voraussetzungen
+
+- C++17 oder neuer
+- readline >= 8.0
+- make
+
 ## Build
 
 **macOS**
-
 ```bash
 brew install readline
 make
@@ -22,15 +27,17 @@ make
 ```
 
 **Linux (Debian/Ubuntu)**
-
 ```bash
 sudo apt install libreadline-dev
 make
 ./shell
 ```
 
-## Benutzung
+**Windows**
 
+> Windows wird nicht nativ unterstützt. Empfehlung: [WSL2](https://learn.microsoft.com/de-de/windows/wsl/install) (Windows Subsystem for Linux) verwenden, dann wie Linux vorgehen.
+
+## Benutzung
 ```bash
 shell > ls
 shell > ls | grep .cpp
@@ -43,7 +50,6 @@ shell > exit
 
 <details>
 <summary>Projektstruktur</summary>
-
 ```
 ├── main.cpp       # Hauptschleife
 ├── shell.h        # Deklarationen und Farb-Definitionen
