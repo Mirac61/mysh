@@ -1,31 +1,36 @@
 #include "shell.h"
+#include <cstring>
 
 char *myhistory[MAX_HISTORY];
 int history_count = 0;
+Alias aliases[MAX_ALIASES];
+int alias_count = 0;
 
 int main() {
     char *args[MAX_ARGS];
     char cwd[1024];
     char prompt[1200];
     char *befehle[MAX_ARGS];
+    load_config();
 
     while (1) {
-        // Prompt
         getcwd(cwd, sizeof(cwd));
         char *folder = strrchr(cwd, '/');
         folder = folder ? folder + 1 : cwd;
         snprintf(prompt, sizeof(prompt), BOLD "%s" RESET " > ", folder);
 
-        // Input lesen
         char *input = readline(prompt);
         if (input == NULL) break;
+
+        char input_copy[1024];
+        strncpy(input_copy, input, sizeof(input_copy));
+        input_copy[1023] = '\0';
 
         if (strlen(input) > 0) {
             add_history(input);
             myhistory[history_count++] = strdup(input);
         }
 
-        // Pipe check
         int anzahl = split_pipes(input, befehle);
 
         if (anzahl > 1) {
@@ -36,7 +41,6 @@ int main() {
             if (args[0] == NULL) { free(input); continue; }
             if (strcmp(args[0], "exit") == 0) { free(input); break; }
 
-            // cd
             if (strcmp(args[0], "cd") == 0) {
                 if (args[1] == NULL)
                     chdir(getenv("HOME"));
@@ -49,13 +53,11 @@ int main() {
                 continue;
             }
 
-            // Redirect check
             char *datei = NULL;
             char type;
             int anzahl_args = 0;
             while (args[anzahl_args] != NULL) anzahl_args++;
 
-            // ls
             if (strcmp(args[0], "ls") == 0) {
                 if (find_redirect(args, anzahl_args, &datei, &type))
                     execute_redirect(args, datei, type);
@@ -65,11 +67,9 @@ int main() {
                 continue;
             }
 
-            // history
             if (strcmp(args[0], "history") == 0) {
-                for (int i = 0; i < history_count; i++) {
+                for (int i = 0; i < history_count; i++)
                     printf("%d  %s\n", i + 1, myhistory[i]);
-                }
                 free(input);
                 continue;
             }
@@ -89,7 +89,23 @@ int main() {
                 continue;
             }
 
-            // Alle anderen Befehle
+            if (strcmp(args[0], "alias") == 0) {
+                parse_alias(input_copy);
+                if (alias_count > 0) {
+                    save_alias(aliases[alias_count-1].name, aliases[alias_count-1].value);
+                    printf(GREEN "Alias '%s' gespeichert!\n" RESET, aliases[alias_count-1].name);
+                }
+                free(input);
+                continue;
+            }
+
+            char *alias_value = find_alias(args[0]);
+            if (alias_value) {
+                parse(alias_value, args);
+                anzahl_args = 0;
+                while (args[anzahl_args] != NULL) anzahl_args++;
+            }
+
             if (find_redirect(args, anzahl_args, &datei, &type))
                 execute_redirect(args, datei, type);
             else
