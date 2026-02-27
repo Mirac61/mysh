@@ -50,14 +50,16 @@ shell > exit
 
 <details>
 <summary>Projektstruktur</summary>
-```
+
+<pre>
 ├── main.cpp       # Hauptschleife
 ├── shell.h        # Deklarationen und Farb-Definitionen
 ├── ls.cpp         # eigenes ls mit Dateityp-Färbung
 ├── parse.cpp      # Input-Parsing, Pipe-Splitting, Redirect-Erkennung
 ├── execute.cpp    # Prozessausführung, Pipes, I/O Umleitung
 └── Makefile
-```
+</pre>
+
 </details>
 <details>
 <summary>Warum?</summary>
