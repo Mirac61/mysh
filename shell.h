@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cstdio>
 #include <fcntl.h>
 #include <stdio.h>
@@ -12,7 +11,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#define MAX_ARGS 64
+#define MAX_ARGS    64
+#define MAX_HISTORY 100
 
 // Farben
 #define RESET       "\033[0m"
@@ -28,6 +28,9 @@
 #define LIGHT_BLUE  "\033[38;5;117m"
 #define GRAY        "\033[38;5;245m"
 #define BOLD        "\033[1m"
+
+extern char *myhistory[MAX_HISTORY];
+extern int history_count;
 
 // ls.cpp
 void my_ls(const char *path);
