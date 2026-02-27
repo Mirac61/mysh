@@ -58,12 +58,8 @@ shell > exit
 ├── execute.cpp    # Prozessausführung, Pipes, I/O Umleitung
 └── Makefile
 ```
-
 </details>
-
 <details>
 <summary>Warum?</summary>
-
-Die meisten Tutorials erklären die Theorie. Ich wollte eine Shell bauen und dabei wirklich verstehen, was zwischen Enter-drücken und Output-sehen passiert — `fork()`, `execvp()`, `dup2()`, `pipe()`, alles davon.
-
+Die meisten Tutorials erklären die Theorie. Ich wollte eine Shell bauen und dabei wirklich verstehen, was zwischen Enter-drücken und Output-sehen passiert — fork(), execvp(), dup2(), pipe(), alles davon.
 </details>
