@@ -1,30 +1,39 @@
 # mysh
 
-Eine Unix-Shell in C++ — gebaut um zu verstehen, was wirklich passiert wenn man Enter drückt.
+Eine Unix Shell in C++, gebaut um zu verstehen, was passiert, wenn du Enter drückst.
 
 ## Features
 
-- **Farbiges `ls`** — Dateien werden nach Typ eingefärbt (C++, JS/TS, HTML, CSS, JSON, Java, Python, ...)
-- **Pipes** — Befehle verketten mit `|`, mehrere Pipes hintereinander möglich
-- **I/O Umleitung** — `>`, `>>` und `<`
-- **Command History** — vorherige Befehle mit Pfeiltasten navigieren
-- **Tab Autocomplete** — über readline
-- **`cd`** mit aktuellem Verzeichnis im Prompt
+- **Prompt mit Infos**
+  - aktuelles Verzeichnis
+  - Git Branch Status, wenn im Repo bist
+- **Farbiges `ls`**
+  - Dateien werden nach Typ eingefärbt, z.B. C Cpp JS TS HTML CSS JSON Java Python
+  - funktioniert bei `ls`, `ls -a`, `ls -l`, `ls -la` und Kombinationen
+- **Pipes**
+  - Befehle mit `|` verketten, mehrere Pipes hintereinander möglich
+- **I O Umleitung**
+  - `>`, `>>`, `<`
+- **Command History**
+  - vorherige Befehle mit Pfeiltasten
+- **Tab Autocomplete**
+  - über readline
+- **cd**
+  - wechselt das Verzeichnis, Prompt aktualisiert sich direkt
 
 ## Voraussetzungen
 
 - C++17 oder neuer
-- readline >= 8.0
+- readline 8 oder neuer
 - make
 
 ## Build
 
-**macOS**
+### macOS
 ```bash
 brew install readline
 make
 ./shell
-```
 
 **Linux (Debian/Ubuntu)**
 ```bash
@@ -57,6 +66,7 @@ shell > exit
 ├── ls.cpp         # eigenes ls mit Dateityp-Färbung
 ├── parse.cpp      # Input-Parsing, Pipe-Splitting, Redirect-Erkennung
 ├── execute.cpp    # Prozessausführung, Pipes, I/O Umleitung
+├── git.cpp        # Git Erkennung und Branch Status für Prompt
 └── Makefile
 </pre>
 
