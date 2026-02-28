@@ -34,8 +34,9 @@ Eine Unix Shell in C++, gebaut um zu verstehen, was passiert, wenn du Enter drü
 brew install readline
 make
 ./shell
+```
 
-**Linux (Debian/Ubuntu)**
+## Linux(Debian/Ubuntu)
 ```bash
 sudo apt install libreadline-dev
 make
