@@ -10,13 +10,13 @@
 #include <dirent.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <time.h>
 
 #define MAX_ARGS    64
 #define MAX_HISTORY 100
 #define MAX_ALIASES 50
 
-
-// Farben
+// Farben (Text)
 #define RESET       "\033[0m"
 #define RED         "\033[31m"
 #define GREEN       "\033[32m"
@@ -31,6 +31,17 @@
 #define GRAY        "\033[38;5;245m"
 #define BOLD        "\033[1m"
 
+// Prompt Farben
+#define BG_CYAN     "\033[46m"
+#define BG_YELLOW   "\033[43m"
+#define FG_CYAN     "\033[36m"
+#define FG_YELLOW   "\033[33m"
+#define FG_BLACK    "\033[30m"
+
+// Powerline
+#define PL_RIGHT    "\ue0b0"
+#define PL_LEFT     "\ue0b2"
+
 extern char *myhistory[MAX_HISTORY];
 extern int history_count;
 
@@ -42,9 +53,8 @@ typedef struct {
 extern Alias aliases[MAX_ALIASES];
 extern int alias_count;
 
-
 // ls.cpp
-void my_ls(const char *path);
+void my_ls(const char *path, bool show_all, bool show_long);
 
 // parse.cpp
 void parse(char *input, char **args);
@@ -61,3 +71,9 @@ void execute_redirect(char **args, char *datei, char type);
 // config.cpp
 void load_config();
 void save_alias(char *name, char *value);
+
+// git.cpp
+int find_git_root(const char *cwd, char *git_path);
+void get_git_branch(const char *git_path, char *branch);
+void get_time(char *buf);
+int get_git_status(const char *git_path);
