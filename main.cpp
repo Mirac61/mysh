@@ -9,6 +9,8 @@ int alias_count = 0;
 int color_folder = 17;
 int color_branch = 172;
 int color_time = 237;
+int color_git_clean = 34;
+int color_git_dirty = 196;
 
 int main() {
     char *args[MAX_ARGS];
@@ -32,28 +34,26 @@ int main() {
             get_git_branch(git_path, branch);
             int clean = get_git_status(git_path);
             const char *status = clean ? "✓" : "✗";
-            const char *bg_status = clean ? "\033[42m" : "\033[41m";
-            const char *bg_status_fg = clean ? "\033[32m" : "\033[31m";
 
-            // Mit Git
             snprintf(prompt, sizeof(prompt),
-                "\033[48;5;%dm\033[97m  %s \033[0m"
-                "\033[38;5;%dm\033[48;5;%dm" PL_RIGHT
-                "\033[97m  %s %s \033[0m"
-                "\033[38;5;%dm\033[48;5;%dm" PL_RIGHT
-                "\033[37m  %s \033[0m"
-                "\033[38;5;%dm" PL_RIGHT "\033[0m"
-                " \033[36m❯\033[0m ",
-                color_folder, folder, color_folder, color_branch, branch, status, color_branch, color_time, uhrzeit,color_time);
-        } else {
+                "\001\033[48;5;%dm\033[97m\002  %s \001\033[0m\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
+                "\001\033[97m\002  %s %s \001\033[0m\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
+                "\001\033[37m\002  %s \001\033[0m\033[38;5;%dm\002" PL_RIGHT "\001\033[0m\002"
+                " \001\033[36m\002❯\001\033[0m\002 ",
+                color_folder, folder,
+                color_folder, clean ? color_git_clean : color_git_dirty,
+                branch, status,
+                clean ? color_git_clean : color_git_dirty, color_time,
+                uhrzeit, color_time);
+        }else {
             /// Ohne Git
             snprintf(prompt, sizeof(prompt),
-                "\033[48;5;%dm\033[97m  %s \033[0m"
-                "\033[38;5;%dm\033[48;5;%dm" PL_RIGHT
-                "\033[37m  %s \033[0m"
-                "\033[38;5;%dm" PL_RIGHT "\033[0m"
-                " \033[36m❯\033[0m ",
-                color_folder, folder,color_folder, color_time, uhrzeit, color_time);
+                "\001\033[48;5;%dm\033[97m\002  %s \001\033[0m\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
+                "\001\033[37m\002  %s \001\033[0m\033[38;5;%dm\002" PL_RIGHT "\001\033[0m\002"
+                " \001\033[36m\002❯\001\033[0m\002 ",
+                color_folder, folder,
+                color_folder, color_time,
+                uhrzeit, color_time);
         }
 
         char *input = readline(prompt);

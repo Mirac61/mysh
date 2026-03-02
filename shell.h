@@ -56,6 +56,8 @@ extern int alias_count;
 extern int color_folder;
 extern int color_branch;
 extern int color_time;
+extern int color_git_clean;
+extern int color_git_dirty;
 
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);
