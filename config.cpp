@@ -25,6 +25,8 @@ void load_config() {
             color_git_clean = atoi(line + 17);
         if (strncmp(line, "prompt_git_dirty=", 17) == 0)
             color_git_dirty = atoi(line + 17);
+        if (strncmp(line, "startup=", 8) == 0)
+            startup_method = atoi(line + 8);
     }
     fclose(file);
 }

@@ -59,6 +59,8 @@ extern int color_time;
 extern int color_git_clean;
 extern int color_git_dirty;
 
+extern int startup_method;
+
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);
 
@@ -83,3 +85,6 @@ int find_git_root(const char *cwd, char *git_path);
 void get_git_branch(const char *git_path, char *branch);
 void get_time(char *buf);
 int get_git_status(const char *git_path);
+
+// startup.cpp
+void startup_animation(int method);

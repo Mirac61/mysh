@@ -12,6 +12,8 @@ int color_time = 237;
 int color_git_clean = 34;
 int color_git_dirty = 196;
 
+int startup_method = 1; // sofort
+
 int main() {
     char *args[MAX_ARGS];
     char cwd[1024];
@@ -21,6 +23,7 @@ int main() {
     char branch[256] = "";
     load_config();
     rl_bind_key('\t', rl_complete);
+    startup_animation(startup_method);
 
     while (1) {
         getcwd(cwd, sizeof(cwd));
@@ -153,6 +156,14 @@ int main() {
                     save_alias(aliases[alias_count-1].name, aliases[alias_count-1].value);
                     printf(GREEN "Alias '%s' gespeichert!\n" RESET, aliases[alias_count-1].name);
                 }
+                free(input);
+                continue;
+            }
+
+            if (strcmp(args[0], "config") == 0) {
+                char cmd[1024];
+                snprintf(cmd, sizeof(cmd), "nvim %s/.myshrc", getenv("HOME"));
+                system(cmd);
                 free(input);
                 continue;
             }
