@@ -1,6 +1,6 @@
 # mysh
 > Eine Unix-Shell in C++ — gebaut um zu verstehen, was wirklich passiert wenn man Enter drückt.
-
+![Demo](mysh_aufnahme.gif)
 ---
 
 ## Features
