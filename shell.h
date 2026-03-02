@@ -91,3 +91,6 @@ int get_git_status(const char *git_path);
 
 // startup.cpp
 void startup_animation(int method);
+
+// builtins.cpp
+int run_builtin(char **args, int anzahl_args, char *alias_copy);

@@ -1,6 +1,8 @@
 # mysh
 > Eine Unix-Shell in C++ — gebaut um zu verstehen, was wirklich passiert wenn man Enter drückt.
 
+![Demo](mysh_aufnahme.gif)
+
 ---
 
 ## Features
@@ -121,11 +123,22 @@ config
 
 ---
 
+## Tests
+
+```bash
+./test.sh
+```
+
+Testet automatisch: `echo`, `export`, `cd`, Pipes, `&&`, `||`, Tilde-Expansion und Redirects.
+
+---
+
 ## Projektstruktur
 
 ```
 mysh/
-├── main.cpp       # Hauptschleife und Built-in Befehle
+├── main.cpp       # Hauptschleife, Parsing und Befehlsausführung
+├── builtins.cpp   # Built-in Befehle (cd, export, alias, history, config, exit)
 ├── shell.h        # Deklarationen und Farb-Definitionen
 ├── ls.cpp         # eigenes ls mit Dateityp-Färbung
 ├── parse.cpp      # Input-Parsing, Pipes, Redirect, Quote-Handling
@@ -133,6 +146,7 @@ mysh/
 ├── config.cpp     # ~/.myshrc laden und speichern
 ├── git.cpp        # Git-Erkennung, Branch und Status für Prompt
 ├── startup.cpp    # Startup-Animation
+├── test.sh        # automatisierte Tests
 ├── example.myshrc # Beispiel-Konfiguration
 └── Makefile
 ```
