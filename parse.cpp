@@ -2,11 +2,35 @@
 
 void parse(char *input, char **args) {
     int i = 0;
-    args[i] = strtok(input, " \n");
-    while (args[i] != NULL) {
-        i++;
-        args[i] = strtok(NULL, " \n");
+    char *p = input;
+    while (*p != '\0') {
+        // Leerzeichen und Tabs überspringen
+        while (*p == ' ' || *p == '\t') {
+            p++;
+            if (*p == '\0') break;
+        }
+        if (*p == '\0') break;
+
+        if (*p == '"') {
+            // Anführungszeichen überspringen und Start merken
+            p++;
+            args[i++] = p;
+            // Bis zum schließenden " weitergehen
+            while (*p != '"' && *p != '\0') p++;
+            // " durch \0 ersetzen um den String zu beenden
+            if (*p == '"') *p++ = '\0';
+
+        } else {
+            // Start des Arguments merken
+            args[i++] = p;
+            // Bis zum nächsten Leerzeichen weitergehen
+            while (*p != ' ' && *p != '\t' && *p != '\0') p++;
+            // String beenden
+            if (*p != '\0') *p++ = '\0';
+        }
     }
+    // Ende der Argumentliste markieren
+    args[i] = NULL;
 }
 
 int split_pipes(char *input, char **befehle) {
