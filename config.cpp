@@ -21,6 +21,10 @@ void load_config() {
             color_branch = atoi(line + 14);
         if (strncmp(line, "prompt_time=", 12) == 0)
             color_time = atoi(line + 12);
+        if (strncmp(line, "prompt_git_clean=", 17) == 0)
+            color_git_clean = atoi(line + 17);
+        if (strncmp(line, "prompt_git_dirty=", 17) == 0)
+            color_git_dirty = atoi(line + 17);
     }
     fclose(file);
 }
