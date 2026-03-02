@@ -6,6 +6,10 @@ int history_count = 0;
 Alias aliases[MAX_ALIASES];
 int alias_count = 0;
 
+int color_folder = 17;
+int color_branch = 172;
+int color_time = 237;
+
 int main() {
     char *args[MAX_ARGS];
     char cwd[1024];
@@ -14,6 +18,7 @@ int main() {
     char git_path[1024];
     char branch[256] = "";
     load_config();
+    rl_bind_key('\t', rl_complete);
 
     while (1) {
         getcwd(cwd, sizeof(cwd));
@@ -32,23 +37,23 @@ int main() {
 
             // Mit Git
             snprintf(prompt, sizeof(prompt),
-                "\033[48;5;17m\033[97m  %s \033[0m"           // Dunkleres Blau: Ordner
-                "\033[38;5;17m\033[48;5;172m" PL_RIGHT         // Pfeil: Blau→Orange
-                "\033[97m  %s %s \033[0m"                      // Orange: Branch + Status
-                "\033[38;5;172m\033[48;5;237m" PL_RIGHT        // Pfeil: Orange→Grau
-                "\033[37m  %s \033[0m"                         // Grau: Uhrzeit
-                "\033[38;5;237m" PL_RIGHT "\033[0m"
+                "\033[48;5;%dm\033[97m  %s \033[0m"
+                "\033[38;5;%dm\033[48;5;%dm" PL_RIGHT
+                "\033[97m  %s %s \033[0m"
+                "\033[38;5;%dm\033[48;5;%dm" PL_RIGHT
+                "\033[37m  %s \033[0m"
+                "\033[38;5;%dm" PL_RIGHT "\033[0m"
                 " \033[36m❯\033[0m ",
-                folder, branch, status, uhrzeit);
+                color_folder, folder, color_folder, color_branch, branch, status, color_branch, color_time, uhrzeit,color_time);
         } else {
-            // Ohne Git
+            /// Ohne Git
             snprintf(prompt, sizeof(prompt),
-                "\033[48;5;17m\033[97m  %s \033[0m"           // Dunkleres Blau: Ordner
-                "\033[38;5;17m\033[48;5;237m" PL_RIGHT         // Pfeil: Blau→Grau
-                "\033[37m  %s \033[0m"                         // Grau: Uhrzeit
-                "\033[38;5;237m" PL_RIGHT "\033[0m"
+                "\033[48;5;%dm\033[97m  %s \033[0m"
+                "\033[38;5;%dm\033[48;5;%dm" PL_RIGHT
+                "\033[37m  %s \033[0m"
+                "\033[38;5;%dm" PL_RIGHT "\033[0m"
                 " \033[36m❯\033[0m ",
-                folder, uhrzeit);
+                color_folder, folder,color_folder, color_time, uhrzeit, color_time);
         }
 
         char *input = readline(prompt);
@@ -71,10 +76,17 @@ int main() {
         if (anzahl > 1) {
             execute_pipe(befehle, anzahl);
         } else {
-            parse(input_copy, args);  // input_copy statt input
+            parse(input_copy, args);
 
-            if (args[0] == NULL) { free(input); continue; }
-            if (strcmp(args[0], "exit") == 0) { free(input); break; }
+            if (args[0] == NULL) {
+                free(input);
+                continue;
+            }
+            if (strcmp(args[0], "exit") == 0) {
+                printf("\033[0m");
+                free(input);
+                break;
+            }
 
             if (strcmp(args[0], "cd") == 0) {
                 if (args[1] == NULL)
@@ -136,7 +148,7 @@ int main() {
             }
 
             if (strcmp(args[0], "alias") == 0) {
-                parse_alias(alias_copy);  // alias_copy statt input_copy
+                parse_alias(alias_copy);
                 if (alias_count > 0) {
                     save_alias(aliases[alias_count-1].name, aliases[alias_count-1].value);
                     printf(GREEN "Alias '%s' gespeichert!\n" RESET, aliases[alias_count-1].name);
@@ -162,5 +174,6 @@ int main() {
     }
 
     printf("Bye!\n");
+    printf("\033[0m");
     return 0;
 }

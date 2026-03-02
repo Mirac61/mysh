@@ -15,6 +15,12 @@ void load_config() {
         {
             parse_alias(line);
         }
+        if (strncmp(line, "prompt_folder=", 14) == 0)
+            color_folder = atoi(line + 14);
+        if (strncmp(line, "prompt_branch=", 14) == 0)
+            color_branch = atoi(line + 14);
+        if (strncmp(line, "prompt_time=", 12) == 0)
+            color_time = atoi(line + 12);
     }
     fclose(file);
 }

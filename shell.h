@@ -53,6 +53,10 @@ typedef struct {
 extern Alias aliases[MAX_ALIASES];
 extern int alias_count;
 
+extern int color_folder;
+extern int color_branch;
+extern int color_time;
+
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);
 
