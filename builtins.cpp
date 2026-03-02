@@ -1,0 +1,59 @@
+#include "shell.h"
+#include <cstdlib>
+#include <cstring>
+
+int run_builtin(char **args, int anzahl_args, char *alias_copy) {
+    if (args[0] == NULL) return 0;
+
+    if (strcmp(args[0], "exit") == 0) {
+        printf("\033[0m");
+        printf("Bye!\n");
+        exit(0);
+    }
+
+    if (strcmp(args[0], "cd") == 0) {
+        if (args[1] == NULL)
+            chdir(getenv("HOME"));
+        else if (chdir(args[1]) != 0) {
+            printf(RED);
+            perror("cd");
+            printf(RESET);
+        }
+        return 1;
+    }
+
+    if (strcmp(args[0], "export") == 0) {
+        if (args[1] != NULL) {
+            char *eq = strchr(args[1], '=');
+            if (eq != NULL) {
+                *eq = '\0';
+                setenv(args[1], eq + 1, 1);
+            }
+        }
+        return 1;
+    }
+
+    if (strcmp(args[0], "history") == 0) {
+        for (int i = 0; i < history_count; i++)
+            printf("%d  %s\n", i + 1, myhistory[i]);
+        return 1;
+    }
+
+    if (strcmp(args[0], "alias") == 0) {
+        parse_alias(alias_copy);
+        if (alias_count > 0) {
+            save_alias(aliases[alias_count-1].name, aliases[alias_count-1].value);
+            printf(GREEN "Alias '%s' gespeichert!\n" RESET, aliases[alias_count-1].name);
+        }
+        return 1;
+    }
+
+    if (strcmp(args[0], "config") == 0) {
+        char cmd[1024];
+        snprintf(cmd, sizeof(cmd), "nvim %s/.myshrc", getenv("HOME"));
+        system(cmd);
+        return 1;
+    }
+
+    return 0;
+}
