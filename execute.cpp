@@ -1,13 +1,15 @@
 #include "shell.h"
 
-void execute(char **args) {
+int execute(char **args) {
+    int status;
     pid_t pid = fork();
     if (pid == 0) {
         if (execvp(args[0], args) == -1)
             printf(RED "Befehl nicht gefunden: %s\n" RESET, args[0]);
         exit(1);
     } else {
-        wait(NULL);
+        waitpid(pid, &status, 0);
+        return WEXITSTATUS(status);
     }
 }
 
