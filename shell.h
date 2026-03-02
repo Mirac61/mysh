@@ -70,9 +70,12 @@ int split_pipes(char *input, char **befehle);
 int find_redirect(char **args, int anzahl, char **datei, char *type);
 void parse_alias(char *input);
 char *find_alias(char *name);
+int split_semicolon(char *input, char **befehle);
+int split_and(char *input, char **befehle);
+int split_or(char *input, char **befehle);
 
 // execute.cpp
-void execute(char **args);
+int execute(char **args);
 void execute_pipe(char **befehle, int anzahl);
 void execute_redirect(char **args, char *datei, char type);
 

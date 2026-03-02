@@ -1,5 +1,4 @@
 # mysh
-
 > Eine Unix-Shell in C++ — gebaut um zu verstehen, was wirklich passiert wenn man Enter drückt.
 
 ---
@@ -15,16 +14,21 @@
 - **Farbiges `ls`** — Dateien nach Typ eingefärbt (C++, JS/TS, HTML, CSS, JSON, Java, Python, ...)
   - unterstützt `-a`, `-l`, `-la` und Kombinationen
 - **`echo`** — mit Variablen-Support (`$HOME`, `$PATH`, ...)
+- **`export`** — Umgebungsvariablen setzen (`export NAME=Wert`), direkt für alle Kindprozesse verfügbar
 - **`alias`** — Abkürzungen definieren, werden automatisch in `~/.myshrc` gespeichert
 - **`history`** — alle Befehle der Session anzeigen
-- **`config`** — öffnet `~/.myshrc` direkt in nano
+- **`config`** — öffnet `~/.myshrc` direkt in nvim
 
 ### Shell-Funktionen
 - **Pipes** — Befehle verketten mit `|`, mehrere hintereinander möglich
+- **Sequentielle Ausführung** — Befehle mit `;` nacheinander ausführen
+- **Bedingte Ausführung** — `&&` führt den nächsten Befehl nur bei Erfolg aus, `||` nur bei Fehler
 - **I/O Umleitung** — `>`, `>>` und `<`
+- **Tilde-Expansion** — `~` wird automatisch zum Home-Verzeichnis aufgelöst
 - **Command History** — vorherige Befehle mit Pfeiltasten navigieren
 - **Tab Autocomplete** — Dateien und Ordner via readline
 - **Quoted Arguments** — `git commit -m "Nachricht mit Leerzeichen"` funktioniert korrekt
+- **Ctrl+C** — bricht laufende Prozesse ab, ohne die Shell selbst zu beenden
 
 ---
 
@@ -88,11 +92,28 @@ for i in {0..255}; do echo -e "\033[48;5;${i}m $i \033[0m"; done
 ---
 
 ## Benutzung
+
 ```bash
+# Navigation
+cd ~/Projekte
 ls -la
+
+# Pipes und Umleitung
 ls | grep .cpp
 ls > output.txt
-git commit -m "Nachricht mit Leerzeichen"
+
+# Bedingte Ausführung
+make && ./shell
+cd /nicht/vorhanden || echo "Verzeichnis nicht gefunden"
+
+# Mehrere Befehle
+export PATH=$PATH:/usr/local/bin; echo $PATH
+
+# Variablen
+export NAME=Mirac
+echo $NAME
+
+# Aliases
 alias ll="ls -la"
 history
 config
@@ -101,6 +122,7 @@ config
 ---
 
 ## Projektstruktur
+
 ```
 mysh/
 ├── main.cpp       # Hauptschleife und Built-in Befehle

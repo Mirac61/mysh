@@ -1,35 +1,27 @@
 #include "shell.h"
+#include <cstring>
 
 void parse(char *input, char **args) {
     int i = 0;
     char *p = input;
     while (*p != '\0') {
-        // Leerzeichen und Tabs überspringen
-        while (*p == ' ' || *p == '\t') {
+        while (*p == ' ' || *p == '\t' || *p == '\n') {
             p++;
             if (*p == '\0') break;
         }
         if (*p == '\0') break;
 
         if (*p == '"') {
-            // Anführungszeichen überspringen und Start merken
             p++;
             args[i++] = p;
-            // Bis zum schließenden " weitergehen
             while (*p != '"' && *p != '\0') p++;
-            // " durch \0 ersetzen um den String zu beenden
             if (*p == '"') *p++ = '\0';
-
         } else {
-            // Start des Arguments merken
             args[i++] = p;
-            // Bis zum nächsten Leerzeichen weitergehen
-            while (*p != ' ' && *p != '\t' && *p != '\0') p++;
-            // String beenden
+            while (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\0') p++;
             if (*p != '\0') *p++ = '\0';
         }
     }
-    // Ende der Argumentliste markieren
     args[i] = NULL;
 }
 
@@ -94,4 +86,44 @@ char *find_alias(char *name) {
             return aliases[i].value;
     }
     return NULL;
+}
+
+int split_semicolon(char *input, char **befehle){
+    int anzahl = 0;
+    befehle[anzahl] = strtok(input, ";");
+    while (befehle[anzahl] != NULL) {
+        anzahl++;
+        befehle[anzahl] = strtok(NULL, ";");
+    }
+    return anzahl;
+}
+
+int split_and(char *input, char **befehle){
+    int anzahl = 0;
+    char *p = input;
+
+    befehle[anzahl++] = p;
+
+    while((p = strstr(p, "&&")) != NULL){
+        *p = '\0';
+        *(p+1) = '\0';
+        p += 2;
+        befehle[anzahl++] = p;
+    }
+    return anzahl;
+}
+
+int split_or(char *input, char **befehle){
+    int anzahl = 0;
+    char *p = input;
+
+    befehle[anzahl++] = p;
+
+    while((p = strstr(p, "||")) != NULL){
+        *p = '\0';
+        *(p+1) = '\0';
+        p += 2;
+        befehle[anzahl++] = p;
+    }
+    return anzahl;
 }
