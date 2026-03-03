@@ -55,9 +55,9 @@ int main() {
             int clean = get_git_status(git_path);
             const char *status = clean ? "✓" : "✗";
             snprintf(prompt, sizeof(prompt),
-                "\001\033[48;5;%dm\033[97m\002  %s \001\033[0m\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
-                "\001\033[97m\002  %s %s \001\033[0m\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
-                "\001\033[37m\002  %s \001\033[0m\033[38;5;%dm\002" PL_RIGHT "\001\033[0m\002"
+                "\001\033[48;5;%dm\033[97m\002  %s \001\033[0m\002\001\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
+                "\001\033[97m\002  %s %s \001\033[0m\002\001\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
+                "\001\033[37m\002  %s \001\033[0m\002\001\033[38;5;%dm\002" PL_RIGHT "\001\033[0m\002"
                 " \001\033[36m\002❯\001\033[0m\002 ",
                 color_folder, folder,
                 color_folder, clean ? color_git_clean : color_git_dirty,
@@ -66,8 +66,8 @@ int main() {
                 uhrzeit, color_time);
         } else {
             snprintf(prompt, sizeof(prompt),
-                "\001\033[48;5;%dm\033[97m\002  %s \001\033[0m\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
-                "\001\033[37m\002  %s \001\033[0m\033[38;5;%dm\002" PL_RIGHT "\001\033[0m\002"
+                "\001\033[48;5;%dm\033[97m\002  %s \001\033[0m\002\001\033[38;5;%dm\033[48;5;%dm\002" PL_RIGHT
+                "\001\033[37m\002  %s \001\033[0m\002\001\033[38;5;%dm\002" PL_RIGHT "\001\033[0m\002"
                 " \001\033[36m\002❯\001\033[0m\002 ",
                 color_folder, folder,
                 color_folder, color_time,
