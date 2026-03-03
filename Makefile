@@ -1,7 +1,15 @@
 CXX = g++
-FLAGS = -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include -lreadline
-SRCS = main.cpp ls.cpp parse.cpp execute.cpp config.cpp git.cpp startup.cpp builtins.cpp
 TARGET = shell
+SRCS = main.cpp ls.cpp parse.cpp execute.cpp config.cpp git.cpp startup.cpp builtins.cpp
+
+# Betriebssystem erkennen
+UNAME := $(shell uname)
+
+ifeq ($(UNAME), Darwin)
+    FLAGS = -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include -lreadline
+else
+    FLAGS = -lreadline
+endif
 
 all:
 	$(CXX) $(SRCS) -o $(TARGET) $(FLAGS)

@@ -1,6 +1,5 @@
 #include "shell.h"
 #include <cstdio>
-#include <sys/_types/_fd_def.h>
 #include <sys/resource.h>
 #include <libgen.h>
 
