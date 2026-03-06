@@ -28,6 +28,10 @@ void expand_tilde(char **args) {
     }
 }
 
+void sigchld_handler(int sig) {
+    while (waitpid(-1, NULL, WNOHANG) > 0);
+}
+
 int main() {
     char *args[MAX_ARGS];
     char cwd[1024];
@@ -40,6 +44,7 @@ int main() {
     rl_bind_key('\t', rl_complete);
     startup_animation(startup_method);
     signal(SIGINT, SIG_IGN); // Shell ignoriert Ctrl+C, Kindprozesse nicht
+    signal(SIGCHLD, sigchld_handler);
 
     while (1) {
         getcwd(cwd, sizeof(cwd));
