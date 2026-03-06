@@ -60,7 +60,8 @@ extern int color_time;
 extern int color_git_clean;
 extern int color_git_dirty;
 
-extern int startup_method;
+extern int startup_animation_method;
+extern int startup_info_method;
 
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);
@@ -92,7 +93,7 @@ void get_time(char *buf);
 int get_git_status(const char *git_path);
 
 // startup.cpp
-void startup_animation(int method);
+void startup_sequence(int animation, int info);
 
 // builtins.cpp
 int run_builtin(char **args, int anzahl_args, char *alias_copy);
