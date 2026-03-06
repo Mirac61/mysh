@@ -8,6 +8,8 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     if (strcmp(args[0], "exit") == 0) {
         printf("\033[0m");
         printf("Bye!\n");
+        for (int i = 0; i < history_count; i++) { free(myhistory[i]); myhistory[i] = NULL; }
+        for (int i = 0; i < alias_count; i++) { free(aliases[i].name); free(aliases[i].value); }
         exit(0);
     }
 

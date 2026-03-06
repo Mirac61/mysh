@@ -77,6 +77,12 @@ int main() {
         char *input = readline(prompt);
         if (input == NULL) break;
 
+        if (strlen(input) > 1023) {
+            fprintf(stderr, "Eingabe zu lang (max 1023 Zeichen)\n");
+            free(input);
+            continue;
+        }
+
         // Kopie für parse_alias da parse() den String verändert
         char alias_copy[1024];
         strncpy(alias_copy, input, sizeof(alias_copy));
@@ -84,7 +90,8 @@ int main() {
 
         if (strlen(input) > 0) {
             add_history(input);
-            myhistory[history_count++] = strdup(input);
+            if (history_count < MAX_HISTORY)
+                myhistory[history_count++] = strdup(input);
         }
 
         // Erst Semikolon, dann && / ||, dann Pipes
@@ -210,6 +217,8 @@ int main() {
 
         free(input);
     }
+    for (int i = 0; i < history_count; i++) { free(myhistory[i]); myhistory[i] = NULL; }
+    for (int i = 0; i < alias_count; i++) { free(aliases[i].name); free(aliases[i].value); }
 
     printf("Bye!\n");
     printf("\033[0m");
