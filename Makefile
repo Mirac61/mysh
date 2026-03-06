@@ -1,6 +1,6 @@
 CXX = g++
 TARGET = shell
-SRCS = main.cpp ls.cpp parse.cpp execute.cpp config.cpp git.cpp startup.cpp builtins.cpp
+SRCS = main.cpp ls.cpp parse.cpp execute.cpp config.cpp git.cpp startup.cpp builtins.cpp process.cpp
 
 # Betriebssystem erkennen
 UNAME := $(shell uname)

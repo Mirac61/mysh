@@ -11,6 +11,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <time.h>
+#include <signal.h>
 
 #define MAX_ARGS    64
 #define MAX_HISTORY 100
@@ -73,6 +74,7 @@ char *find_alias(char *name);
 int split_semicolon(char *input, char **befehle);
 int split_and(char *input, char **befehle);
 int split_or(char *input, char **befehle);
+void expand_tilde(char **args);
 
 // execute.cpp
 int execute(char **args);
@@ -94,3 +96,7 @@ void startup_animation(int method);
 
 // builtins.cpp
 int run_builtin(char **args, int anzahl_args, char *alias_copy);
+
+// process.cpp
+void process_input(char *input, char *alias_copy);
+void run_command(char *cmd, char *alias_copy);

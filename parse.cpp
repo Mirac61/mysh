@@ -148,3 +148,16 @@ int split_or(char *input, char **befehle) {
     }
     return anzahl;
 }
+
+// ~ durch HOME ersetzen
+void expand_tilde(char **args) {
+    char *home = getenv("HOME");
+    if (!home) return;
+    static char bufs[MAX_ARGS][1024];
+    for (int i = 0; args[i] != NULL; i++) {
+        if (args[i][0] == '~') {
+            snprintf(bufs[i], sizeof(bufs[i]), "%s%s", home, args[i] + 1);
+            args[i] = bufs[i];
+        }
+    }
+}
