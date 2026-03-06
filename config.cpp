@@ -3,7 +3,9 @@
 
 void load_config() {
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.myshrc", getenv("HOME"));
+    char *home = getenv("HOME");
+    if (!home) return;
+    snprintf(path, sizeof(path), "%s/.myshrc", home);
 
     FILE *file = fopen(path, "r");
     if (!file) return;
@@ -33,7 +35,9 @@ void load_config() {
 
 void save_alias(char *name, char *value) {
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.myshrc", getenv("HOME"));
+    char *home = getenv("HOME");
+    if (!home) return;
+    snprintf(path, sizeof(path), "%s/.myshrc", home);
     FILE *file = fopen(path, "a");
     if (!file) return;
 

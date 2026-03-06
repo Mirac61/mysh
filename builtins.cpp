@@ -14,8 +14,10 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     }
 
     if (strcmp(args[0], "cd") == 0) {
-        if (args[1] == NULL)
-            chdir(getenv("HOME"));
+        if (args[1] == NULL){
+            char *home = getenv("HOME");
+            if (home) chdir(home);
+        }
         else if (chdir(args[1]) != 0) {
             printf(RED);
             perror("cd");
@@ -52,7 +54,9 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
 
     if (strcmp(args[0], "config") == 0) {
         char cmd[1024];
-        snprintf(cmd, sizeof(cmd), "nvim %s/.myshrc", getenv("HOME"));
+        char *home = getenv("HOME");
+        if (!home) { fprintf(stderr, "HOME nicht gesetzt\n"); return 1; }
+        snprintf(cmd, sizeof(cmd), "nvim %s/.myshrc", home);
         system(cmd);
         return 1;
     }
