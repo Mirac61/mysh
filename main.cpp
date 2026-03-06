@@ -13,7 +13,8 @@ int color_time = 237;
 int color_git_clean = 34;
 int color_git_dirty = 196;
 
-int startup_method = 1;
+int startup_animation_method = 0;
+int startup_info_method = 1;
 
 void sigchld_handler(int sig) {
     while (waitpid(-1, NULL, WNOHANG) > 0);
@@ -27,7 +28,7 @@ int main() {
 
     load_config();
     rl_bind_key('\t', rl_complete);
-    startup_animation(startup_method);
+    startup_sequence(startup_animation_method, startup_info_method);
     signal(SIGINT, SIG_IGN);
     signal(SIGCHLD, sigchld_handler);
 

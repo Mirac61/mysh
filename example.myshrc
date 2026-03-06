@@ -10,12 +10,18 @@ prompt_time=237         # Farbe der Uhrzeit
 prompt_git_clean=34     # Farbe wenn alles committed (grün)
 prompt_git_dirty=196    # Farbe wenn Änderungen vorhanden (rot)
 
-# ── Startup Animation ──
-# 0 = kein Logo
-# 1 = sofort
-# 2 = typewriter
-# 3 = fade-in
-startup=3
+# ── Start Animation ──
+# 0 nichts
+# 1 nur Logo (sofort)
+# 2 Logo fade-in
+# 3 Logo typewriter
+# 4 Logo + neofetch (coming soon)
+startup_info=2
+
+# 0 nichts
+# 1 nur Logo
+# 2 Logo + neofetch
+startup_animation=1
 
 # ── Aliases ──
 alias ll="ls -la"
