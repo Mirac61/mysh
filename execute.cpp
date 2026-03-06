@@ -2,19 +2,26 @@
 
 int execute(char **args) {
     int status;
+    sigset_t mask, oldmask;
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &mask, &oldmask);
+
     pid_t pid = fork();
     if (pid < 0) {
         perror("fork");
+        sigprocmask(SIG_SETMASK, &oldmask, NULL);
         return 1;
     }
     if (pid == 0) {
+        sigprocmask(SIG_SETMASK, &oldmask, NULL);
         if (execvp(args[0], args) == -1)
             perror(args[0]);
         exit(1);
-    } else {
-        waitpid(pid, &status, 0);
-        return WEXITSTATUS(status);
     }
+    waitpid(pid, &status, 0);
+    sigprocmask(SIG_SETMASK, &oldmask, NULL);
+    return WEXITSTATUS(status);
 }
 
 void execute_pipe(char **befehle, int anzahl) {
