@@ -14,82 +14,19 @@
 
 ### Befehle
 - **Farbiges `ls`** — Dateien nach Typ eingefärbt (C++, JS/TS, HTML, CSS, JSON, Java, Python, ...)
-  - unterstützt `-a`, `-l`, `-la` und Kombinationen
 - **`echo`** — mit Variablen-Support (`$HOME`, `$PATH`, ...)
-- **`export`** — Umgebungsvariablen setzen (`export NAME=Wert`), direkt für alle Kindprozesse verfügbar
-- **`alias`** — Abkürzungen definieren, werden automatisch in `~/.myshrc` gespeichert
+- **`export`** — Umgebungsvariablen setzen
+- **`alias`** — Abkürzungen definieren, werden in `~/.myshrc` gespeichert
 - **`history`** — alle Befehle der Session anzeigen
 - **`config`** — öffnet `~/.myshrc` direkt in nvim
+- **`sf [filter]`** — Datei fuzzy suchen und in `$EDITOR` öffnen
+- **`sd [filter]`** — Ordner fuzzy suchen und direkt navigieren
 
 ### Shell-Funktionen
-- **Pipes** — Befehle verketten mit `|`, mehrere hintereinander möglich
-- **Sequentielle Ausführung** — Befehle mit `;` nacheinander ausführen
-- **Bedingte Ausführung** — `&&` führt den nächsten Befehl nur bei Erfolg aus, `||` nur bei Fehler
-- **I/O Umleitung** — `>`, `>>` und `<`
-- **Tilde-Expansion** — `~` wird automatisch zum Home-Verzeichnis aufgelöst
-- **Command History** — vorherige Befehle mit Pfeiltasten navigieren
-- **Tab Autocomplete** — Dateien und Ordner via readline
-- **Quoted Arguments** — `git commit -m "Nachricht mit Leerzeichen"` funktioniert korrekt
-- **Ctrl+C** — bricht laufende Prozesse ab, ohne die Shell selbst zu beenden
-
----
-
-## Voraussetzungen
-
-- C++17 oder neuer
-- readline ≥ 8.0
-- make
-
----
-
-## Installation
-
-**macOS**
-```bash
-brew install readline
-git clone https://github.com/dein-user/mysh
-cd mysh
-make
-./shell
-```
-
-**Linux (Debian/Ubuntu)**
-```bash
-sudo apt install libreadline-dev
-git clone https://github.com/dein-user/mysh
-cd mysh
-make
-./shell
-```
-
-**Windows**
-> Windows wird nicht nativ unterstützt. Empfehlung: [WSL2](https://learn.microsoft.com/de-de/windows/wsl/install) verwenden, dann wie Linux vorgehen.
-
----
-
-## Konfiguration
-
-Kopiere die Beispiel-Config in dein Home-Verzeichnis:
-```bash
-cp example.myshrc ~/.myshrc
-```
-Danach mit `config` direkt in der Shell bearbeiten.
-
-### Alle Optionen
-
-| Option | Werte | Beschreibung |
-|--------|-------|--------------|
-| `prompt_folder` | 0–255 | Farbe des Ordnernamens |
-| `prompt_time` | 0–255 | Farbe der Uhrzeit |
-| `prompt_git_clean` | 0–255 | Farbe bei sauberem Repo |
-| `prompt_git_dirty` | 0–255 | Farbe bei uncommitted Änderungen |
-| `startup` | 0–3 | 0 = kein Logo, 1 = sofort, 2 = typewriter, 3 = fade-in |
-| `alias` | `name="befehl"` | Eigene Shortcuts |
-
-Alle 256 Farben anzeigen:
-```bash
-for i in {0..255}; do echo -e "\033[48;5;${i}m $i \033[0m"; done
-```
+- Pipes `|`, Sequenz `;`, bedingte Ausführung `&&` / `||`
+- I/O Umleitung `>`, `>>`, `<`
+- Tilde-Expansion, Command History, Tab Autocomplete
+- Quoted Arguments, Ctrl+C
 
 ---
 
@@ -108,33 +45,57 @@ Gemessen mit [hyperfine](https://github.com/sharkdp/hyperfine):
 
 ---
 
-## Benutzung
+## Voraussetzungen
+
+- C++17 oder neuer
+- readline ≥ 8.0
+- make
+- fzf (für `sf` und `sd`)
+
+---
+
+## Installation
+
+**macOS**
+```bash
+brew install readline fzf
+git clone https://github.com/Mirac61/mysh
+cd mysh && make && ./shell
+```
+
+**Linux (Debian/Ubuntu)**
+```bash
+sudo apt install libreadline-dev fzf
+git clone https://github.com/Mirac61/mysh
+cd mysh && make && ./shell
+```
+
+---
+
+## Konfiguration
 
 ```bash
-# Navigation
-cd ~/Projekte
-ls -la
-
-# Pipes und Umleitung
-ls | grep .cpp
-ls > output.txt
-
-# Bedingte Ausführung
-make && ./shell
-cd /nicht/vorhanden || echo "Verzeichnis nicht gefunden"
-
-# Mehrere Befehle
-export PATH=$PATH:/usr/local/bin; echo $PATH
-
-# Variablen
-export NAME=Mirac
-echo $NAME
-
-# Aliases
-alias ll="ls -la"
-history
-config
+cp example.myshrc ~/.myshrc
 ```
+
+<details>
+<summary>Alle Optionen</summary>
+<br>
+
+| Option | Werte | Beschreibung |
+|--------|-------|--------------|
+| `prompt_folder` | 0–255 | Farbe des Ordnernamens |
+| `prompt_time` | 0–255 | Farbe der Uhrzeit |
+| `prompt_git_clean` | 0–255 | Farbe bei sauberem Repo |
+| `prompt_git_dirty` | 0–255 | Farbe bei uncommitted Änderungen |
+| `startup` | 0–3 | 0 = kein Logo, 1 = sofort, 2 = typewriter, 3 = fade-in |
+| `alias` | `name="befehl"` | Eigene Shortcuts |
+
+Alle 256 Farben anzeigen:
+```bash
+for i in {0..255}; do echo -e "\033[48;5;${i}m $i \033[0m"; done
+```
+</details>
 
 ---
 
@@ -144,27 +105,58 @@ config
 ./test.sh
 ```
 
-Testet automatisch: `echo`, `export`, `cd`, Pipes, `&&`, `||`, Tilde-Expansion und Redirects.
+---
+
+<details>
+<summary>Benutzung</summary>
+<br>
+
+```bash
+# Navigation
+cd ~/Projekte
+ls -la
+
+# Fuzzy Search
+sf main       # Datei suchen → in $EDITOR öffnen
+sd Proj       # Ordner suchen → direkt navigieren
+
+# Pipes und Umleitung
+ls | grep .cpp
+ls > output.txt
+
+# Bedingte Ausführung
+make && ./shell
+cd /nicht/vorhanden || echo "Verzeichnis nicht gefunden"
+
+# Aliases und Variablen
+alias ll="ls -la"
+export NAME=Mirac
+echo $NAME
+```
+</details>
 
 ---
 
-## Projektstruktur
+<details>
+<summary>Projektstruktur</summary>
+<br>
 
 ```
 mysh/
-├── main.cpp       # Hauptschleife, Parsing und Befehlsausführung
-├── builtins.cpp   # Built-in Befehle (cd, export, alias, history, config, exit)
+├── main.cpp       # Hauptschleife und Befehlsausführung
+├── builtins.cpp   # Built-in Befehle (cd, export, alias, sf, sd, ...)
 ├── shell.h        # Deklarationen und Farb-Definitionen
 ├── ls.cpp         # eigenes ls mit Dateityp-Färbung
 ├── parse.cpp      # Input-Parsing, Pipes, Redirect, Quote-Handling
 ├── execute.cpp    # Prozessausführung, Pipes, I/O Umleitung
 ├── config.cpp     # ~/.myshrc laden und speichern
-├── git.cpp        # Git-Erkennung, Branch und Status für Prompt
+├── git.cpp        # Git-Erkennung für Prompt
 ├── startup.cpp    # Startup-Animation
 ├── test.sh        # automatisierte Tests
 ├── example.myshrc # Beispiel-Konfiguration
 └── Makefile
 ```
+</details>
 
 ---
 
