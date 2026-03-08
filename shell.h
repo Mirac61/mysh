@@ -76,11 +76,13 @@ int split_semicolon(char *input, char **befehle);
 int split_and(char *input, char **befehle);
 int split_or(char *input, char **befehle);
 void expand_tilde(char **args);
+void parse_simple(char *cmd, char **args);
 
 // execute.cpp
 int execute(char **args);
 void execute_pipe(char **befehle, int anzahl);
 void execute_redirect(char **args, char *datei, char type);
+void execute_output(char **befehle, int anzahl, char *result, int result_size);
 
 // config.cpp
 void load_config();
