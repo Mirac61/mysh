@@ -10,3 +10,7 @@ shell
 
 # Test Dateien die du mit > erstellt hast
 *.txt
+
+Doxyfile
+html
+latex

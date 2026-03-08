@@ -36,20 +36,24 @@ void logo_fadein() {
 
 // Animationen (startup_animation=)
 void stars_animations();    // 1 = Sternenhimmel
-void anim_boot();     // 2 = Boot-Sequenz
-void anim_temple();   // 3 = Japanischer Tempel
+void boot_animation();     // 2 = Boot-Sequenz
+void temple_animation();   // 3 = Japanischer Tempel
 
 void startup_sequence(int animation, int info) {
+    // Prüfen ob interaktives Terminal
+    // Wenn nicht (z.B. benchmark/script) → sofort beenden
+    if (!isatty(STDIN_FILENO)) return;
+    
     // Animation zuerst
     if (animation == 1) stars_animations();
-    if (animation == 2) anim_boot();
-    if (animation == 3) anim_temple();
+    if (animation == 2) boot_animation();
+    if (animation == 3) temple_animation();
+    
     // Dann Info anzeigen
     if (info == 0) return;
     if (info == 1) logo_instant();
-    if (info == 2) logo_fadein();      // war logo_typewriter
-    if (info == 3) logo_typewriter();  // war logo_fadein
-    // info == 4 wird später neofetch sein
+    if (info == 2) logo_fadein();
+    if (info == 3) logo_typewriter();
 }
 
 void stars_animations() {
@@ -91,5 +95,6 @@ void stars_animations() {
     }
     printf("\033[2J\033[3J\033[H"); // clear vor Logo
 }
-void anim_boot()   {}
-void anim_temple() {}
+
+void boot_animation() {}
+void temple_animation() {}

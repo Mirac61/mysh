@@ -93,6 +93,21 @@ for i in {0..255}; do echo -e "\033[48;5;${i}m $i \033[0m"; done
 
 ---
 
+## Performance
+
+Gemessen mit [hyperfine](https://github.com/sharkdp/hyperfine):
+
+| Command | Mean [ms] |
+|:---|---:|
+| Startup | 9.5 ± 0.4 |
+| ls | 16.5 ± 1.2 |
+| pwd | 18.1 ± 0.6 |
+| echo | 16.8 ± 1.1 |
+
+> Schneller als fish (~14ms Startup) · 0 Memory Leaks
+
+---
+
 ## Benutzung
 
 ```bash
