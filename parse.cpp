@@ -161,3 +161,15 @@ void expand_tilde(char **args) {
         }
     }
 }
+
+// Splittet einen String nur by Space – keine Glob Expansion wie parse()
+void parse_simple(char *cmd, char **args) {
+    int i = 0;
+    char *token = strtok(cmd, " ");
+    while (token != NULL) {
+        args[i++] = token;
+        token = strtok(NULL, " ");
+    }
+    // execvp erwartet NULL am Ende
+    args[i] = NULL;
+}

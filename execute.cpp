@@ -85,3 +85,67 @@ void execute_redirect(char **args, char *datei, char type) {
         wait(NULL);
     }
 }
+
+// Wie execute_pipe, aber der Output des letzten Prozesses
+// wird über eine extra Pipe an den Elternprozess zurückgegeben
+void execute_output(char **befehle, int anzahl, char *result, int result_size) {
+    char *args[MAX_ARGS];
+    int pipes[anzahl - 1][2];
+    // Rückkanal: letzter Prozess → Eltern
+    int output_pipe[2];
+    pipe(output_pipe);
+
+    for (int i = 0; i < anzahl - 1; i++) {
+        if (pipe(pipes[i]) < 0) {
+            perror("pipe");
+            return;
+        }
+    }
+
+    for (int j = 0; j < anzahl; j++) {
+        pid_t pid = fork();
+        if (pid == 0) {
+            // stdin vom vorherigen Prozess lesen
+            if (j > 0)
+                dup2(pipes[j-1][0], STDIN_FILENO);
+
+            // stdout in nächste Pipe schreiben
+            if (j < anzahl - 1)
+                dup2(pipes[j][1], STDOUT_FILENO);
+
+            // letzter Prozess schreibt in output_pipe statt stdout
+            if (j == anzahl - 1)
+                dup2(output_pipe[1], STDOUT_FILENO);
+
+            // alle Pipes schließen – Kind braucht sie nicht mehr
+            for (int k = 0; k < anzahl - 1; k++) {
+                close(pipes[k][0]);
+                close(pipes[k][1]);
+            }
+            close(output_pipe[0]);
+            close(output_pipe[1]);
+
+            // parse_simple statt parse() – verhindert Glob Expansion von *
+            parse_simple(befehle[j], args);
+            execvp(args[0], args);
+            perror(args[0]);
+            exit(1);
+        }
+    }
+
+    for (int i = 0; i < anzahl - 1; i++) {
+        close(pipes[i][0]);
+        close(pipes[i][1]);
+    }
+
+    // write-Ende schließen damit read() nicht ewig wartet
+    close(output_pipe[1]);
+    read(output_pipe[0], result, result_size);
+    close(output_pipe[0]);
+
+    // fzf hängt einen Zeilenumbruch an – den entfernen
+    result[strcspn(result, "\n")] = 0;
+
+    for (int i = 0; i < anzahl; i++)
+        wait(NULL);
+}
