@@ -62,8 +62,9 @@ extern int color_git_dirty;
 
 extern int startup_animation_method;
 extern int startup_info_method;
-extern int rain_color;
-extern int boot_color;
+extern int accent_color;
+extern int accent_color_term;
+
 
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);

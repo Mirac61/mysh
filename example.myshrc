@@ -15,30 +15,23 @@ prompt_git_dirty=196    # Farbe wenn Änderungen vorhanden (rot)
 # 1 = Logo sofort
 # 2 = Logo fade-in
 # 3 = Logo typewriter
-# 4 = Logo + neofetch (coming soon)
-startup_info=2
+# 4 = neofetch
+startup_info=4
 
 # ── Startup Animation ──
 # 0 = keine Animation
 # 1 = Sternenhimmel
 # 2 = Boot-Sequenz
 # 3 = Glitch Effekt
-# 4 = Regen (Blau)
-startup_animation=2
+# 4 = Regen
+startup_animation=1
 
-# ── Regen Farbe (256-Color Index) ──
-# 51  = Blau
-# 46  = Grün (Matrix)
-# 201 = Lila
-# 255 = Weiß
-rain_color=201
-
-# ── Boot Color (256-Color Index) ──
-# 34  = Grün
-# 196 = Rot
-# 51  = Blau
-# 226 = Gelb
-boot_color=196
+# ── Farbe ──
+# accent_color      = 256-Color für Animationen (0-255)
+# accent_color_term = Terminal-Farbe für neofetch (0-7)
+#   0=schwarz 1=rot 2=grün 3=gelb 4=blau 5=lila 6=cyan 7=weiß
+accent_color=201
+accent_color_term=5
 
 # ── Aliases ──
 alias ll="ls -la"
