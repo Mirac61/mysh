@@ -165,3 +165,6 @@ mysh/
 <br>
 Die meisten Tutorials erklären die Theorie. Ich wollte eine Shell bauen und dabei wirklich verstehen, was zwischen Enter-drücken und Output-sehen passiert — <code>fork()</code>, <code>execvp()</code>, <code>dup2()</code>, <code>pipe()</code>, alles davon.
 </details>
+
+## Startup Animationen
+Die Animationen wurden mit Unterstützung von Claude (Anthropic) entwickelt.

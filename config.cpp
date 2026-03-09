@@ -31,6 +31,10 @@ void load_config() {
             startup_animation_method = atoi(line + 18);
         if (strncmp(line, "startup_info=", 13) == 0)
             startup_info_method = atoi(line + 13);
+        if (strncmp(line, "rain_color=", 11) == 0)
+            rain_color = atoi(line + 11);
+        if (strncmp(line, "boot_color=", 11) == 0)
+            boot_color = atoi(line + 11);
     }
     fclose(file);
 }

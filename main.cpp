@@ -15,6 +15,8 @@ int color_git_dirty = 196;
 
 int startup_animation_method = 0;
 int startup_info_method = 1;
+int rain_color = 51;
+int boot_color = 46;
 
 void sigchld_handler(int sig) {
     while (waitpid(-1, NULL, WNOHANG) > 0);
