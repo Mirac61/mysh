@@ -10,18 +10,35 @@ prompt_time=237         # Farbe der Uhrzeit
 prompt_git_clean=34     # Farbe wenn alles committed (grün)
 prompt_git_dirty=196    # Farbe wenn Änderungen vorhanden (rot)
 
-# ── Start Animation ──
-# 0 nichts
-# 1 nur Logo (sofort)
-# 2 Logo fade-in
-# 3 Logo typewriter
-# 4 Logo + neofetch (coming soon)
+# ── Startup Info ──
+# 0 = nichts
+# 1 = Logo sofort
+# 2 = Logo fade-in
+# 3 = Logo typewriter
+# 4 = Logo + neofetch (coming soon)
 startup_info=2
 
-# 0 nichts
-# 1 nur Logo
-# 2 Logo + neofetch
-startup_animation=1
+# ── Startup Animation ──
+# 0 = keine Animation
+# 1 = Sternenhimmel
+# 2 = Boot-Sequenz
+# 3 = Glitch Effekt
+# 4 = Regen (Blau)
+startup_animation=2
+
+# ── Regen Farbe (256-Color Index) ──
+# 51  = Blau
+# 46  = Grün (Matrix)
+# 201 = Lila
+# 255 = Weiß
+rain_color=201
+
+# ── Boot Color (256-Color Index) ──
+# 34  = Grün
+# 196 = Rot
+# 51  = Blau
+# 226 = Gelb
+boot_color=196
 
 # ── Aliases ──
 alias ll="ls -la"
