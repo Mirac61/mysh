@@ -1,6 +1,6 @@
 #include "shell.h"
 
-int execute(char **args) {
+int execute(char **args, bool background) {
     int status;
     sigset_t mask, oldmask;
     sigemptyset(&mask);
@@ -18,6 +18,14 @@ int execute(char **args) {
         if (execvp(args[0], args) == -1)
             perror(args[0]);
         exit(1);
+    }
+    if (background) {
+        jobs[job_count].pid = pid;
+        strncpy(jobs[job_count].command, args[0], sizeof(jobs[job_count].command) - 1);
+        jobs[job_count].id = job_count + 1;
+        job_count++;
+        sigprocmask(SIG_SETMASK, &oldmask, NULL);
+        return 0;
     }
     waitpid(pid, &status, 0);
     sigprocmask(SIG_SETMASK, &oldmask, NULL);

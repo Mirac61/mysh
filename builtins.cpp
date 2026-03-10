@@ -61,6 +61,23 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
         return 1;
     }
 
+    if (strcmp(args[0], "jobs") == 0) {
+        print_jobs();
+        return 1;
+    }
+
+    if (strcmp(args[0], "fg") == 0) {
+        int job_id = atoi(args[1]);
+        for (int i = 0; i < job_count; i++) {
+            if (jobs[i].id == job_id) {
+                waitpid(jobs[i].pid, NULL, 0);
+                memmove(&jobs[i], &jobs[i+1], sizeof(Job) * (job_count - i - 1));
+                job_count--;
+                return 1;
+            }
+        }
+    }
+
 
     if (strcmp(args[0], "sf") == 0) {
         char find_cmd[256];
@@ -86,7 +103,7 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
         if (!editor) editor = (char*)"nvim";
         snprintf(cmd, sizeof(cmd), "%s %s", editor, result);
         parse(cmd, exec_args);
-        execute(exec_args);
+        execute(exec_args, background);
         return 1;
     }
 

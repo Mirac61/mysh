@@ -18,6 +18,11 @@ int startup_info_method = 1;
 int accent_color = 51;
 int accent_color_term = 5;
 
+bool background = false;
+Job jobs[MAX_JOBS];
+int job_count = 0;
+int status = 0;
+
 void sigchld_handler(int sig) {
     while (waitpid(-1, NULL, WNOHANG) > 0);
 }

@@ -51,6 +51,18 @@ typedef struct {
     char *value;
 } Alias;
 
+#define MAX_JOBS 100
+
+typedef struct {
+    int id;
+    pid_t pid;
+    char command[1024];
+    bool running;
+} Job;
+
+extern Job jobs[MAX_JOBS];
+extern int job_count;
+
 extern Alias aliases[MAX_ALIASES];
 extern int alias_count;
 
@@ -65,6 +77,7 @@ extern int startup_info_method;
 extern int accent_color;
 extern int accent_color_term;
 
+extern bool background;
 
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);
@@ -82,7 +95,7 @@ void expand_tilde(char **args);
 void parse_simple(char *cmd, char **args);
 
 // execute.cpp
-int execute(char **args);
+int execute(char **args, bool background);
 void execute_pipe(char **befehle, int anzahl);
 void execute_redirect(char **args, char *datei, char type);
 void execute_output(char **befehle, int anzahl, char *result, int result_size);
@@ -106,3 +119,5 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy);
 // process.cpp
 void process_input(char *input, char *alias_copy);
 void run_command(char *cmd, char *alias_copy);
+void print_jobs();
+void remove_finished_jobs();
