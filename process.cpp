@@ -1,4 +1,4 @@
-#include "shell.h"
+           #include "shell.h"
 
 void process_input(char *cmd, char *alias_copy) {
     char *args[MAX_ARGS];
@@ -66,13 +66,22 @@ void process_input(char *cmd, char *alias_copy) {
         while (args[anzahl_args] != NULL) anzahl_args++;
     }
 
+    if (anzahl_args > 0 && strcmp(args[anzahl_args - 1], "&") == 0) {
+        background = true;
+        args[anzahl_args - 1] = NULL;
+        anzahl_args--;
+    }
+
+
     // Redirect oder normale Ausführung
     char *datei = NULL;
     char type;
     if (find_redirect(args, anzahl_args, &datei, &type))
         execute_redirect(args, datei, type);
-    else
-        execute(args);
+    else{
+        execute(args, background);
+        background = false;
+    }
 }
 
 void run_command(char *input, char *alias_copy) {
@@ -92,7 +101,8 @@ void run_command(char *input, char *alias_copy) {
                 char *args[MAX_ARGS];
                 parse(tmp, args);
                 expand_tilde(args);
-                if (args[0]) last_exit = execute(args);
+                if (args[0]) last_exit = execute(args, background);
+                background = false;
             }
             continue;
         }
@@ -108,7 +118,8 @@ void run_command(char *input, char *alias_copy) {
                 char *args[MAX_ARGS];
                 parse(tmp, args);
                 expand_tilde(args);
-                if (args[0]) last_exit = execute(args);
+                if (args[0]) last_exit = execute(args, background);
+                background = false;
             }
             continue;
         }
@@ -122,5 +133,23 @@ void run_command(char *input, char *alias_copy) {
         }
 
         process_input(semi_befehle[s], alias_copy);
+    }
+}
+
+void print_jobs(){
+    for (int i = 0; i < job_count; i++) {
+        printf("[%d] %d running   %s\n",
+        jobs[i].id, jobs[i].pid, jobs[i].command);
+    }
+}
+
+void remove_finished_jobs(){
+    int wstatus;
+    for (int i = 0; i < job_count; i++){
+        if (waitpid(jobs[i].pid, &wstatus, WNOHANG) > 0) {
+            memmove(&jobs[i], &jobs[i+1], (job_count - i - 1) * sizeof(Job));
+            i--;
+            job_count--;
+        }
     }
 }
