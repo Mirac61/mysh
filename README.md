@@ -28,6 +28,12 @@
 - Tilde-Expansion, Command History, Tab Autocomplete
 - Quoted Arguments, Ctrl+C
 
+## Aktueller Stand (Variablen-Expansion)
+- `$VAR` wird jetzt in allen Pfaden expandiert: normale Kommandos, Pipes `|`, Redirects `> >> <`, Sequenzen `;`, Bedingungen `&& ||`, Aliases.
+- Tilde-Expansion (`~`) läuft ebenfalls überall nach dem Parsen.
+- Die Expansion arbeitet pro Argument mit statischem Puffer, sodass keine ungültigen Zeiger entstehen.
+
+
 ---
 
 ## Performance
