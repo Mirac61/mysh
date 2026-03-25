@@ -93,6 +93,7 @@ int split_and(char *input, char **befehle);
 int split_or(char *input, char **befehle);
 void expand_tilde(char **args);
 void parse_simple(char *cmd, char **args);
+void expand_variables(char **args);
 
 // execute.cpp
 int execute(char **args, bool background);

@@ -1,4 +1,4 @@
-           #include "shell.h"
+#include "shell.h"
 
 void process_input(char *cmd, char *alias_copy) {
     char *args[MAX_ARGS];
