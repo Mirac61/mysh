@@ -173,3 +173,9 @@ void parse_simple(char *cmd, char **args) {
     // execvp erwartet NULL am Ende
     args[i] = NULL;
 }
+
+void expand_variables(char **args){
+    if (strchr(*args, '$')) {
+
+    }
+}
