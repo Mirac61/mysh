@@ -55,6 +55,8 @@ void execute_pipe(char **befehle, int anzahl) {
                 close(pipes[k][1]);
             }
             parse(befehle[j], args);
+            expand_tilde(args);
+            expand_variables(args);
             execvp(args[0], args);
             perror(args[0]);
             exit(1);
