@@ -1,4 +1,4 @@
-           #include "shell.h"
+#include "shell.h"
 
 void process_input(char *cmd, char *alias_copy) {
     char *args[MAX_ARGS];
@@ -8,6 +8,7 @@ void process_input(char *cmd, char *alias_copy) {
 
     parse(input_copy, args);
     expand_tilde(args);
+    expand_variables(args);
 
     if (args[0] == NULL) return;
 
@@ -62,6 +63,7 @@ void process_input(char *cmd, char *alias_copy) {
     if (alias_value) {
         parse(alias_value, args);
         expand_tilde(args);
+        expand_variables(args);
         anzahl_args = 0;
         while (args[anzahl_args] != NULL) anzahl_args++;
     }
@@ -101,6 +103,7 @@ void run_command(char *input, char *alias_copy) {
                 char *args[MAX_ARGS];
                 parse(tmp, args);
                 expand_tilde(args);
+                expand_variables(args);
                 if (args[0]) last_exit = execute(args, background);
                 background = false;
             }
@@ -118,6 +121,7 @@ void run_command(char *input, char *alias_copy) {
                 char *args[MAX_ARGS];
                 parse(tmp, args);
                 expand_tilde(args);
+                expand_variables(args);
                 if (args[0]) last_exit = execute(args, background);
                 background = false;
             }

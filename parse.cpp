@@ -1,5 +1,7 @@
 #include "shell.h"
+#include <cstdlib>
 #include <cstring>
+#include <cctype>
 
 void parse(char *input, char **args) {
     int i = 0;
@@ -172,4 +174,50 @@ void parse_simple(char *cmd, char **args) {
     }
     // execvp erwartet NULL am Ende
     args[i] = NULL;
+}
+
+void expand_variables(char **args){
+    static char buffer[MAX_ARGS][1024];
+
+    for (int i = 0; args[i] != NULL; i++){
+        const char* source = args[i];
+        if (!strchr(source, '$')) continue;
+
+        char* destination = buffer[i];
+        size_t remaining = sizeof(buffer[i]) -1;
+        while (*source && remaining > 0){
+
+            if (*source == '$'){
+                // '$' überspringen
+                source++;
+                char name[256];
+                size_t n = 0;
+
+                while (*source && (isalnum((unsigned char)*source) || *source == '_')) {
+                    if (n + 1 < sizeof(name)) {
+                        name[n++] = *source;
+                    }
+                    source++;
+                }
+
+                name[n] = '\0';
+
+                // Wert holen, Wenn !Wert -> leerer String
+                const char* val = getenv(name);
+                if(!val) val = "";
+
+                while(*val && remaining > 0){
+                    *destination++ = *val++;
+                    remaining--;
+                }
+            }
+            else{
+                *destination++ = *source++;
+                remaining--;
+            }
+        }
+        // String terminieren
+        *destination = '\0';
+        args[i] = buffer[i];
+    }
 }

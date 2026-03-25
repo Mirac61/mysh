@@ -1,5 +1,6 @@
 # Kompilierte Binary
 shell
+shell_tests
 
 # macOS
 .DS_Store
