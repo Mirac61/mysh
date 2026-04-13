@@ -1,10 +1,8 @@
 CXX = g++
 TARGET = shell
-SRCS = main.cpp ls.cpp parse.cpp execute.cpp config.cpp git.cpp startup.cpp builtins.cpp process.cpp
+SRCS = src/main.cpp src/ls.cpp src/parse.cpp src/execute.cpp src/config.cpp src/git.cpp src/startup.cpp src/builtins.cpp src/process.cpp
 
-# Betriebssystem erkennen
 UNAME := $(shell uname)
-
 ifeq ($(UNAME), Darwin)
     FLAGS = -L/opt/homebrew/opt/readline/lib -I/opt/homebrew/opt/readline/include -lreadline
 else
@@ -12,7 +10,7 @@ else
 endif
 
 all:
-	$(CXX) $(SRCS) -o $(TARGET) $(FLAGS)
+	$(CXX) $(SRCS) -o $(TARGET) -Iinclude $(FLAGS)
 
 install: all
 	cp $(TARGET) /usr/local/bin/mysh
