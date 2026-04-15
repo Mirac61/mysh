@@ -60,6 +60,12 @@ int find_redirect(char **args, int anzahl, char **datei, char *type) {
             args[i] = NULL;
             return 1;
         }
+        else if (strncmp(args[i], "2>",2) == 0) {
+            *type = 'e';
+            *datei = args[i]+2;
+            args[i] = NULL;
+            return 1;
+        }
     }
     return 0;
 }

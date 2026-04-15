@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL_BIN="./shell"
+SHELL_BIN="../shell"
 PASS=0
 FAIL=0
 
@@ -45,9 +45,22 @@ run_test "Tilde in Pfad"         "cd ~/; pwd"                          "$HOME"
 
 echo ""
 echo "=== Redirect ==="
-run_test "Redirect >"            "echo hi > /tmp/mysh_test.txt; cat /tmp/mysh_test.txt"   "hi"
-run_test "Redirect >>"           "echo a > /tmp/mysh_test.txt; echo b >> /tmp/mysh_test.txt; cat /tmp/mysh_test.txt" "b"
-run_test "Redirect <"            "echo testinhalt > /tmp/mysh_test.txt; cat < /tmp/mysh_test.txt" "testinhalt"
+run_test "Redirect >"            "echo hi > /tmp/mysh_test.txt; cat /tmp/mysh_test.txt"                                                          "hi"
+run_test "Redirect >>"           "echo a > /tmp/mysh_test.txt; echo b >> /tmp/mysh_test.txt; cat /tmp/mysh_test.txt"                             "b"
+run_test "Redirect <"            "echo testinhalt > /tmp/mysh_test.txt; cat < /tmp/mysh_test.txt"                                                "testinhalt"
+run_test "2>/dev/null"           "grep xyz /nichtexistent 2>/dev/null"                                                                           ""
+run_test "2> in Datei"           "grep xyz /nichtexistent 2>/tmp/mysh_test.txt; cat /tmp/mysh_test.txt"                                          "grep: /nichtexistent: No such file or directory"
+
+echo ""
+echo "=== PID ==="
+pid_output=$(printf "echo \$\$\nexit\n" | $SHELL_BIN 2>/dev/null | grep -E '^[0-9]+ ?$' | head -1 | tr -d ' ')
+if echo "$pid_output" | grep -qE '^[0-9]+$'; then
+    echo "✓ \$\$ ist Zahl"
+    PASS=$((PASS + 1))
+else
+    echo "✗ \$\$ ist Zahl (bekommen: '$pid_output')"
+    FAIL=$((FAIL + 1))
+fi
 
 echo ""
 echo "Ergebnis: $PASS bestanden, $FAIL fehlgeschlagen"
