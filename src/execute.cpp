@@ -75,7 +75,7 @@ void execute_redirect(char **args, char *datei, char type) {
     pid_t pid = fork();
     if (pid == 0) {
         int fd;
-        if (type == 'o')
+        if (type == 'o' || type == 'e')
             fd = open(datei, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         else if (type == 'a')
             fd = open(datei, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -86,7 +86,7 @@ void execute_redirect(char **args, char *datei, char type) {
             perror(datei);
             exit(1);
         }
-        dup2(fd, (type == 'i') ? STDIN_FILENO : STDOUT_FILENO);
+        dup2(fd, (type == 'i') ? STDIN_FILENO : (type == 'e') ? STDERR_FILENO : STDOUT_FILENO);
         close(fd);
         execvp(args[0], args);
         perror(args[0]);

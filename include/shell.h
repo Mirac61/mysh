@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdio>
+#include <stdio.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +12,7 @@
 #include <readline/history.h>
 #include <time.h>
 #include <signal.h>
+#include <stdbool.h>
 
 #define MAX_ARGS    64
 #define MAX_HISTORY 100
