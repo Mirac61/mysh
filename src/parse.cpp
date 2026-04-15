@@ -1,7 +1,9 @@
 #include "shell.h"
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <cctype>
+#include <unistd.h>
 
 void parse(char *input, char **args) {
     int i = 0;
@@ -192,6 +194,17 @@ void expand_variables(char **args){
                 source++;
                 char name[256];
                 size_t n = 0;
+                if (*source == '$'){
+                    source++;
+                    char pid_str[32];
+                    snprintf(pid_str, sizeof(pid_str), "%d", getpid());
+                    const char *val = pid_str;
+                    while (*val && remaining > 0) {
+                        *destination++ = *val++;
+                        remaining--;
+                    }
+                    continue;
+                }
 
                 while (*source && (isalnum((unsigned char)*source) || *source == '_')) {
                     if (n + 1 < sizeof(name)) {
