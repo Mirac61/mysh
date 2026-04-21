@@ -125,10 +125,10 @@ char *find_alias(char *name) {
 
 int split_semicolon(char *input, char **befehle) {
     int anzahl = 0;
-    befehle[anzahl] = strtok(input, ";");
+    befehle[anzahl] = strtok(input, ";\n");
     while (befehle[anzahl] != NULL) {
         anzahl++;
-        befehle[anzahl] = strtok(NULL, ";");
+        befehle[anzahl] = strtok(NULL, ";\n");
     }
     return anzahl;
 }
