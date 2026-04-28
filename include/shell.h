@@ -18,6 +18,16 @@
 #define MAX_HISTORY 100
 #define MAX_ALIASES 50
 
+# define DEFAULT_COLOR_FOLDER 17
+# define DEFAULT_COLOR_BRANCH 172
+# define DEFAULT_COLOR_TIME 237
+# define DEFAULT_COLOR_GIT_CLEAN 34
+# define DEFAULT_COLOR_GIT_DIRTY 196
+# define DEFAULT_STARTUP_ANIMATION 0
+# define DEFAULT_STARTUP_INFO 1
+# define DEFAULT_ACCENT_COLOR 51
+# define DEFAULT_ACCENT_COLOR_TERM 5
+
 // Farben (Text)
 #define RESET       "\033[0m"
 #define RED         "\033[31m"
@@ -105,6 +115,8 @@ void execute_output(char **befehle, int anzahl, char *result, int result_size);
 // config.cpp
 void load_config();
 void save_alias(char *name, char *value);
+void reload_config();
+void reset_config();
 
 // git.cpp
 int find_git_root(const char *cwd, char *git_path);

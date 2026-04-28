@@ -7,16 +7,16 @@ int history_count = 0;
 Alias aliases[MAX_ALIASES];
 int alias_count = 0;
 
-int color_folder = 17;
-int color_branch = 172;
-int color_time = 237;
-int color_git_clean = 34;
-int color_git_dirty = 196;
+int color_folder = DEFAULT_COLOR_FOLDER;
+int color_branch = DEFAULT_COLOR_BRANCH;
+int color_time = DEFAULT_COLOR_TIME;
+int color_git_clean = DEFAULT_COLOR_GIT_CLEAN;
+int color_git_dirty = DEFAULT_COLOR_GIT_DIRTY;
 
-int startup_animation_method = 0;
-int startup_info_method = 1;
-int accent_color = 51;
-int accent_color_term = 5;
+int startup_animation_method = DEFAULT_STARTUP_ANIMATION;
+int startup_info_method = DEFAULT_STARTUP_INFO;
+int accent_color = DEFAULT_ACCENT_COLOR;
+int accent_color_term = DEFAULT_ACCENT_COLOR_TERM;
 
 bool background = false;
 Job jobs[MAX_JOBS];
