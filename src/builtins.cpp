@@ -26,6 +26,12 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
         return 1;
     }
 
+    if (strcmp(args[0], "reload") == 0) {
+        reload_config();
+        printf(GREEN "Konfiguration neu geladen!\n" RESET);
+        return 1;
+    }
+
     if (strcmp(args[0], "export") == 0) {
         if (args[1] != NULL) {
             char *eq = strchr(args[1], '=');
