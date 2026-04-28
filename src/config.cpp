@@ -51,3 +51,20 @@ void save_alias(char *name, char *value) {
 
     fclose(file);
 }
+
+void reset_config() {
+    color_folder = DEFAULT_COLOR_FOLDER;
+    color_branch = DEFAULT_COLOR_BRANCH;
+    color_time = DEFAULT_COLOR_TIME;
+    color_git_clean = DEFAULT_COLOR_GIT_CLEAN;
+    color_git_dirty = DEFAULT_COLOR_GIT_DIRTY;
+    startup_animation_method = DEFAULT_STARTUP_ANIMATION;
+    startup_info_method = DEFAULT_STARTUP_INFO;
+    accent_color = DEFAULT_ACCENT_COLOR;
+    accent_color_term = DEFAULT_ACCENT_COLOR_TERM;
+}
+
+void reload_config() {
+    reset_config();
+    load_config();
+}
