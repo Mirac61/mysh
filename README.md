@@ -81,7 +81,7 @@ cd mysh && make && ./shell
 ## Konfiguration
 
 ```bash
-cp example.myshrc ~/.myshrc
+cp example/example.myshrc ~/.myshrc
 ```
 
 <details>
