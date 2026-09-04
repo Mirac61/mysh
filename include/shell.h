@@ -1,74 +1,72 @@
 #pragma once
-#include <stdio.h>
+
+#include <dirent.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
 #include <sys/stat.h>
-#include <dirent.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include <sys/wait.h>
 #include <time.h>
-#include <signal.h>
-#include <stdbool.h>
+#include <unistd.h>
+#include <readline/history.h>
+#include <readline/readline.h>
 
-#define MAX_ARGS    64
+#define MAX_ARGS 64
 #define MAX_HISTORY 100
 #define MAX_ALIASES 50
 
-# define DEFAULT_COLOR_FOLDER 17
-# define DEFAULT_COLOR_BRANCH 172
-# define DEFAULT_COLOR_TIME 237
-# define DEFAULT_COLOR_GIT_CLEAN 34
-# define DEFAULT_COLOR_GIT_DIRTY 196
-# define DEFAULT_STARTUP_ANIMATION 0
-# define DEFAULT_STARTUP_INFO 1
-# define DEFAULT_ACCENT_COLOR 51
-# define DEFAULT_ACCENT_COLOR_TERM 5
+#define DEFAULT_COLOR_FOLDER 17
+#define DEFAULT_COLOR_BRANCH 172
+#define DEFAULT_COLOR_TIME 237
+#define DEFAULT_COLOR_GIT_CLEAN 34
+#define DEFAULT_COLOR_GIT_DIRTY 196
+#define DEFAULT_STARTUP_ANIMATION 0
+#define DEFAULT_STARTUP_INFO 1
+#define DEFAULT_ACCENT_COLOR 51
+#define DEFAULT_ACCENT_COLOR_TERM 5
 
 // Farben (Text)
-#define RESET       "\033[0m"
-#define RED         "\033[31m"
-#define GREEN       "\033[32m"
-#define YELLOW      "\033[33m"
-#define BLUE        "\033[34m"
-#define MAGENTA     "\033[35m"
-#define CYAN        "\033[36m"
-#define WHITE       "\033[37m"
-#define ORANGE      "\033[38;5;214m"
-#define PINK        "\033[38;5;213m"
-#define LIGHT_BLUE  "\033[38;5;117m"
-#define GRAY        "\033[38;5;245m"
-#define BOLD        "\033[1m"
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define WHITE "\033[37m"
+#define ORANGE "\033[38;5;214m"
+#define PINK "\033[38;5;213m"
+#define LIGHT_BLUE "\033[38;5;117m"
+#define GRAY "\033[38;5;245m"
+#define BOLD "\033[1m"
 
 // Prompt Farben
-#define BG_CYAN     "\033[46m"
-#define BG_YELLOW   "\033[43m"
-#define FG_CYAN     "\033[36m"
-#define FG_YELLOW   "\033[33m"
-#define FG_BLACK    "\033[30m"
+#define BG_CYAN "\033[46m"
+#define BG_YELLOW "\033[43m"
+#define FG_CYAN "\033[36m"
+#define FG_YELLOW "\033[33m"
+#define FG_BLACK "\033[30m"
 
 // Powerline
-#define PL_RIGHT    "\ue0b0"
-#define PL_LEFT     "\ue0b2"
+#define PL_RIGHT "\ue0b0"
+#define PL_LEFT "\ue0b2"
 
 extern char *myhistory[MAX_HISTORY];
 extern int history_count;
 
 typedef struct {
-    char *name;
-    char *value;
+  char *name;
+  char *value;
 } Alias;
 
 #define MAX_JOBS 100
 
 typedef struct {
-    int id;
-    pid_t pid;
-    char command[1024];
-    bool running;
+  int id;
+  pid_t pid;
+  char command[1024];
+  bool running;
 } Job;
 
 extern Job jobs[MAX_JOBS];
