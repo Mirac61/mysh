@@ -1,4 +1,5 @@
-CXX = g++
+CXX = clang++
+CXXFLAGS = -std=c++23
 TARGET = shell
 SRCS = src/main.cpp src/ls.cpp src/parse.cpp src/execute.cpp src/config.cpp src/git.cpp src/startup.cpp src/builtins.cpp src/process.cpp
 
@@ -10,7 +11,7 @@ else
 endif
 
 all:
-	$(CXX) $(SRCS) -o $(TARGET) -Iinclude $(FLAGS)
+	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET) -Iinclude $(FLAGS)
 
 install: all
 	cp $(TARGET) /usr/local/bin/mysh
