@@ -100,8 +100,9 @@ int main() {
         input[len - 1] = '\0';
       }
     }
-    if (input == NULL)
+    if (input == NULL) {
       break;
+    }
 
     if (strlen(input) > 1023) {
       fprintf(stderr, "Eingabe zu lang (max 1023 Zeichen)\n");

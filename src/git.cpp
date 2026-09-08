@@ -10,14 +10,16 @@ int find_git_root(const char *cwd, char *git_path) {
   while (strcmp(current, "/") != 0) {
     snprintf(git_path, 1024, "%s/.git", current);
     struct stat st;
-    if (stat(git_path, &st) == 0)
+    if (stat(git_path, &st) == 0) {
       return 1;
+    }
 
     char temp[1024];
     strncpy(temp, current, sizeof(temp));
     char *parent = dirname(temp);
-    if (strcmp(parent, current) == 0)
+    if (strcmp(parent, current) == 0) {
       break;
+    }
     strncpy(current, parent, sizeof(current));
   }
   return 0;
@@ -57,8 +59,9 @@ void get_time(char *buf) {
 
 int get_git_status(const char *git_path) {
   FILE *file = popen("git status --porcelain", "r");
-  if (!file)
+  if (!file) {
     return 1;
+  }
 
   char buf[256];
   if (fgets(buf, sizeof(buf), file) == NULL) {

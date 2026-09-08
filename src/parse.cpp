@@ -11,11 +11,13 @@ void parse(char *input, char **args) {
   while (*p != '\0') {
     while (*p == ' ' || *p == '\t' || *p == '\n') {
       p++;
-      if (*p == '\0')
+      if (*p == '\0') {
         break;
+      }
     }
-    if (*p == '\0')
+    if (*p == '\0') {
       break;
+    }
     if (i >= MAX_ARGS - 1) {
       fprintf(stderr, "Zu viele Argumente (max %d)\n", MAX_ARGS - 1);
       break;
@@ -25,14 +27,16 @@ void parse(char *input, char **args) {
       args[i++] = p;
       while (*p != '"' && *p != '\0')
         p++;
-      if (*p == '"')
+      if (*p == '"') {
         *p++ = '\0';
+      }
     } else {
       args[i++] = p;
       while (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\0')
         p++;
-      if (*p != '\0')
+      if (*p != '\0') {
         *p++ = '\0';
+      }
     }
   }
   args[i] = NULL;
@@ -122,8 +126,9 @@ void parse_alias(char *input) {
 
 char *find_alias(char *name) {
   for (int i = 0; i < alias_count; i++) {
-    if (strcmp(aliases[i].name, name) == 0)
+    if (strcmp(aliases[i].name, name) == 0) {
       return aliases[i].value;
+    }
   }
   return NULL;
 }
@@ -167,8 +172,9 @@ int split_or(char *input, char **befehle) {
 // ~ durch HOME ersetzen
 void expand_tilde(char **args) {
   char *home = getenv("HOME");
-  if (!home)
+  if (!home) {
     return;
+  }
   static char bufs[MAX_ARGS][1024];
   for (int i = 0; args[i] != NULL; i++) {
     if (args[i][0] == '~') {
@@ -195,8 +201,9 @@ void expand_variables(char **args) {
 
   for (int i = 0; args[i] != NULL; i++) {
     const char *source = args[i];
-    if (!strchr(source, '$'))
+    if (!strchr(source, '$')) {
       continue;
+    }
 
     char *destination = buffer[i];
     size_t remaining = sizeof(buffer[i]) - 1;
@@ -230,8 +237,9 @@ void expand_variables(char **args) {
 
         // Wert holen, Wenn !Wert -> leerer String
         const char *val = getenv(name);
-        if (!val)
+        if (!val) {
           val = "";
+        }
 
         while (*val && remaining > 0) {
           *destination++ = *val++;

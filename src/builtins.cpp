@@ -3,8 +3,9 @@
 #include <cstring>
 
 int run_builtin(char **args, int anzahl_args, char *alias_copy) {
-  if (args[0] == NULL)
+  if (args[0] == NULL) {
     return 0;
+  }
 
   if (strcmp(args[0], "exit") == 0) {
     printf("\033[0m");
@@ -23,8 +24,9 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
   if (strcmp(args[0], "cd") == 0) {
     if (args[1] == NULL) {
       char *home = getenv("HOME");
-      if (home)
+      if (home) {
         chdir(home);
+      }
     } else if (chdir(args[1]) != 0) {
       printf(RED);
       perror("cd");
@@ -102,23 +104,26 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     char *exec_args[MAX_ARGS];
 
     // mit Filter nur passende Dateien anzeigen
-    if (args[1] != NULL)
+    if (args[1] != NULL) {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type f -name *%s*",
                args[1]);
-    else
+    } else {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type f");
+    }
 
     char *befehle[2] = {find_cmd, (char *)"fzf"};
     execute_output(befehle, 2, result, sizeof(result));
 
     // User hat ESC gedrückt oder nichts ausgewählt
-    if (strlen(result) == 0)
+    if (strlen(result) == 0) {
       return 1;
+    }
 
     // $EDITOR benutzen, fallback auf nvim
     char *editor = getenv("EDITOR");
-    if (!editor)
+    if (!editor) {
       editor = (char *)"nvim";
+    }
     snprintf(cmd, sizeof(cmd), "%s %s", editor, result);
     parse(cmd, exec_args);
     execute(exec_args, background);
@@ -130,17 +135,19 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     char result[1024] = {0};
 
     // mit Filter nur passende Ordner anzeigen
-    if (args[1] != NULL)
+    if (args[1] != NULL) {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type d -name *%s*",
                args[1]);
-    else
+    } else {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type d");
+    }
 
     char *befehle[2] = {find_cmd, (char *)"fzf"};
     execute_output(befehle, 2, result, sizeof(result));
 
-    if (strlen(result) > 0)
+    if (strlen(result) > 0) {
       chdir(result);
+    }
     return 1;
   }
 

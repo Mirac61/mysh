@@ -2,27 +2,33 @@
 
 const char *get_color(const char *name, struct stat *st) {
   const char *ext = strrchr(name, '.');
-  if (S_ISDIR(st->st_mode))
+  if (S_ISDIR(st->st_mode)) {
     return BLUE BOLD;
-  if (st->st_mode & S_IXUSR)
+  }
+  if (st->st_mode & S_IXUSR) {
     return GREEN BOLD;
-  if (!ext)
+  }
+  if (!ext) {
     return GRAY;
+  }
   if (strcmp(ext, ".c") == 0 || strcmp(ext, ".cpp") == 0 ||
       strcmp(ext, ".h") == 0)
     return CYAN;
   if (strcmp(ext, ".js") == 0 || strcmp(ext, ".ts") == 0 ||
       strcmp(ext, ".jsx") == 0 || strcmp(ext, ".tsx") == 0)
     return YELLOW;
-  if (strcmp(ext, ".html") == 0 || strcmp(ext, ".htm") == 0)
+  if (strcmp(ext, ".html") == 0 || strcmp(ext, ".htm") == 0) {
     return ORANGE;
+  }
   if (strcmp(ext, ".css") == 0 || strcmp(ext, ".scss") == 0 ||
       strcmp(ext, ".sass") == 0)
     return PINK;
-  if (strcmp(ext, ".json") == 0)
+  if (strcmp(ext, ".json") == 0) {
     return LIGHT_BLUE;
-  if (strcmp(ext, ".md") == 0 || strcmp(ext, ".txt") == 0)
+  }
+  if (strcmp(ext, ".md") == 0 || strcmp(ext, ".txt") == 0) {
     return WHITE;
+  }
   if (strcmp(ext, ".sh") == 0 || strcmp(ext, ".vue") == 0 ||
       strcmp(ext, ".svelte") == 0)
     return GREEN;
@@ -32,12 +38,15 @@ const char *get_color(const char *name, struct stat *st) {
   if (strcmp(ext, ".java") == 0 || strcmp(ext, ".html") == 0 ||
       strcmp(ext, ".rs") == 0)
     return ORANGE;
-  if (strcmp(ext, ".py") == 0)
+  if (strcmp(ext, ".py") == 0) {
     return YELLOW;
-  if (strcmp(ext, ".xml") == 0)
+  }
+  if (strcmp(ext, ".xml") == 0) {
     return LIGHT_BLUE;
-  if (strcmp(ext, ".go") == 0)
+  }
+  if (strcmp(ext, ".go") == 0) {
     return CYAN;
+  }
   return GRAY;
 }
 
@@ -51,8 +60,9 @@ void my_ls(const char *path, bool show_all, bool show_long) {
 
   struct dirent *entry;
   while ((entry = readdir(dir)) != NULL) {
-    if (!show_all && entry->d_name[0] == '.')
+    if (!show_all && entry->d_name[0] == '.') {
       continue;
+    }
 
     char full_path[1024];
     snprintf(full_path, sizeof(full_path), "%s/%s", dir_path, entry->d_name);
@@ -87,7 +97,8 @@ void my_ls(const char *path, bool show_all, bool show_long) {
     }
   }
 
-  if (!show_long)
+  if (!show_long) {
     printf("\n");
+  }
   closedir(dir);
 }

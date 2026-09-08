@@ -38,28 +38,37 @@ void glitch_animation(int clear_after);
 void rain_animation(int clear_after);
 
 void startup_sequence(int animation, int info) {
-  if (!isatty(STDIN_FILENO))
+  if (!isatty(STDIN_FILENO)) {
     return;
+  }
 
   int clear_after = (info != 4);
 
-  if (animation == 1)
+  if (animation == 1) {
     stars_animations(clear_after);
-  if (animation == 2)
+  }
+  if (animation == 2) {
     boot_animation(clear_after);
-  if (animation == 3)
+  }
+  if (animation == 3) {
     glitch_animation(clear_after);
-  if (animation == 4)
+  }
+  if (animation == 4) {
     rain_animation(clear_after);
+  }
 
-  if (info == 0)
+  if (info == 0) {
     return;
-  if (info == 1)
+  }
+  if (info == 1) {
     logo_instant();
-  if (info == 2)
+  }
+  if (info == 2) {
     logo_fadein();
-  if (info == 3)
+  }
+  if (info == 3) {
     logo_typewriter();
+  }
   if (info == 4) {
     printf("\033[2J\033[3J\033[H");
     fflush(stdout);
@@ -98,12 +107,13 @@ void stars_animations(int clear_after) {
 
     for (int i = 0; i < anzahl; i++) {
       printf("\033[%d;%dH", sy[i] + 1, sx[i] + 1);
-      if (rand() % 3 == 0)
+      if (rand() % 3 == 0) {
         printf("\033[38;5;255m*\033[0m");
-      else if (rand() % 2 == 0)
+      } else if (rand() % 2 == 0) {
         printf("\033[38;5;245m.\033[0m");
-      else
+      } else {
         printf("\033[38;5;240m·\033[0m");
+      }
     }
 
     if (frame % 8 == 0) {
@@ -115,8 +125,9 @@ void stars_animations(int clear_after) {
     fflush(stdout);
     usleep(100000);
   }
-  if (clear_after)
+  if (clear_after) {
     printf("\033[2J\033[3J\033[H");
+  }
 }
 
 void boot_animation(int clear_after) {
@@ -138,8 +149,9 @@ void boot_animation(int clear_after) {
   }
   printf("\033[0m");
   usleep(300000);
-  if (clear_after)
+  if (clear_after) {
     printf("\033[2J\033[3J\033[H");
+  }
 }
 
 void glitch_animation(int clear_after) {
@@ -178,10 +190,11 @@ void glitch_animation(int clear_after) {
       int len = strlen(glogo[zeile]);
       printf("\033[%d;%dH\033[38;5;%dm", logo_y + zeile, logo_x, farbe);
       for (int c = 0; c < len; c++) {
-        if (rand() % 3 == 0)
+        if (rand() % 3 == 0) {
           printf("%c", glitch_chars[rand() % strlen(glitch_chars)]);
-        else
+        } else {
           printf("%c", glogo[zeile][c]);
+        }
       }
       printf("\033[0m");
     }
@@ -212,8 +225,9 @@ void glitch_animation(int clear_after) {
   }
 
   usleep(300000);
-  if (clear_after)
+  if (clear_after) {
     printf("\033[2J\033[3J\033[H");
+  }
 }
 
 void rain_animation(int clear_after) {
@@ -236,19 +250,22 @@ void rain_animation(int clear_after) {
                  accent_color);
         } else if (dist > 0 && dist < 6) {
           int schweif_farbe = accent_color - (dist * 6);
-          if (schweif_farbe < 0)
+          if (schweif_farbe < 0) {
             schweif_farbe = 0;
+          }
           printf("\033[%d;%dH\033[38;5;%dm|\033[0m", row + 1, col + 1,
                  schweif_farbe);
         }
       }
       pos[col] += speed[col];
-      if (pos[col] > rows + 6)
+      if (pos[col] > rows + 6) {
         pos[col] = -(rand() % 10);
+      }
     }
     fflush(stdout);
     usleep(50000);
   }
-  if (clear_after)
+  if (clear_after) {
     printf("\033[2J\033[3J\033[H");
+  }
 }
