@@ -86,7 +86,20 @@ int main() {
       }
     }
 
-    char *input = readline(prompt);
+    char *input = NULL;
+    if (interactive) {
+      input = readline(prompt);
+    } else {
+      // readline spiegelt die Eingabe, wenn stdin kein Terminal ist
+      size_t cap = 0;
+      ssize_t len = getline(&input, &cap, stdin);
+      if (len < 0) {
+        free(input);
+        input = NULL;
+      } else if (len > 0 && input[len - 1] == '\n') {
+        input[len - 1] = '\0';
+      }
+    }
     if (input == NULL)
       break;
 
