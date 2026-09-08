@@ -23,20 +23,30 @@ int find_git_root(const char *cwd, char *git_path) {
   return 0;
 }
 
-void get_git_branch(const char *git_path, char *branch) {
+void get_git_branch(const char *git_path, char *branch, size_t branch_size) {
   char head_path[1024];
   snprintf(head_path, sizeof(head_path), "%s/HEAD", git_path);
 
   FILE *file = fopen(head_path, "r");
-  if (!file)
+  if (!file) {
     return;
+  }
 
   char line[256];
-  fgets(line, sizeof(line), file);
+  if (!fgets(line, sizeof(line), file)) {
+    fclose(file);
+    return;
+  }
   fclose(file);
 
-  strncpy(branch, line + 16, 256);
-  branch[strcspn(branch, "\n")] = '\0';
+  line[strcspn(line, "\n")] = '\0';
+
+  const char prefix[] = "ref: refs/heads/";
+  if (strncmp(line, prefix, sizeof(prefix) - 1) == 0) {
+    snprintf(branch, branch_size, "%s", line + sizeof(prefix) - 1);
+  } else {
+    snprintf(branch, branch_size, "%.7s", line);
+  }
 }
 
 void get_time(char *buf) {

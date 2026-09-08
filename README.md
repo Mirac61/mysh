@@ -32,16 +32,53 @@
 
 ## Performance
 
-Gemessen mit [hyperfine](https://github.com/sharkdp/hyperfine):
+Startup-Zeit, gemessen mit [hyperfine](https://github.com/sharkdp/hyperfine)
+auf Arch Linux (x86_64), 2000+ Läufe pro Shell:
 
-| Command | Mean [ms] |
+| Shell | Startup |
 |:---|---:|
-| Startup | 9.5 ± 0.4 |
-| ls | 16.5 ± 1.2 |
-| pwd | 18.1 ± 0.6 |
-| echo | 16.8 ± 1.1 |
+| dash | 0.53 ms |
+| bash | 0.85 ms |
+| zsh | 0.92 ms |
+| **mysh** | **1.5 ms** |
 
-> 0 Memory Leaks unter Valgrind test
+Mit aktivem Git-Prompt innerhalb eines Repositories liegt mysh bei 4.0 ms.
+Die Differenz ist der `git status`-Subprozess für die Clean/Dirty-Anzeige —
+gemessen mit `strace -c` entfielen darauf rund zwei Drittel der gesamten
+Syscall-Zeit. Ausserhalb eines interaktiven Terminals wird das
+Prompt-Rendering deshalb komplett übersprungen.
+
+Zur Einordnung: bash und zsh lesen bei nicht-interaktivem stdin ihre
+rc-Dateien nicht ein und zeigen in diesem Vergleich keinen Git-Status.
+
+Reproduzieren:
+
+```bash
+echo exit > exit.txt
+hyperfine -N --warmup 20 --input exit.txt ./shell /bin/dash /bin/bash /bin/zsh
+```
+
+Das `-N` ist wichtig — ohne wird jeder Lauf durch `/bin/sh` gestartet und
+man misst überwiegend dessen Overhead.
+
+### Speicher
+
+Geprüft mit Valgrind (Memcheck) über einen Durchlauf mit Pipes,
+Redirections, Aliases und fehlschlagenden Kommandos:
+
+```
+ERROR SUMMARY: 0 errors from 0 contexts
+definitely lost: 0 bytes in 0 blocks
+indirectly lost: 0 bytes in 0 blocks
+  possibly lost: 0 bytes in 0 blocks
+```
+
+Die verbleibenden "still reachable"-Blöcke stammen aus readline, das seine
+internen Puffer beim Beenden nicht freigibt.
+
+```bash
+valgrind --leak-check=full --track-origins=yes ./shell < cmds.txt
+```
 
 ---
 
@@ -56,9 +93,9 @@ Gemessen mit [hyperfine](https://github.com/sharkdp/hyperfine):
 
 ## Installation
 
-**macOS**
+**Arch Linux**
 ```bash
-brew install readline fzf
+sudo pacman -S readline fzf
 git clone https://github.com/Mirac61/mysh
 cd mysh && make && ./shell
 ```
@@ -70,12 +107,19 @@ git clone https://github.com/Mirac61/mysh
 cd mysh && make && ./shell
 ```
 
+**macOS**
+```bash
+brew install readline fzf
+git clone https://github.com/Mirac61/mysh
+cd mysh && make && ./shell
+```
+
 ---
 
 ## Konfiguration
 
 ```bash
-cp example/example.myshrc ~/.myshrc
+cp examples/example.myshrc ~/.myshrc
 ```
 
 <details>
@@ -143,17 +187,23 @@ echo $NAME
 
 ```
 mysh/
-├── main.cpp       # Hauptschleife und Befehlsausführung
-├── builtins.cpp   # Built-in Befehle (cd, export, alias, sf, sd, ...)
-├── shell.h        # Deklarationen und Farb-Definitionen
-├── ls.cpp         # eigenes ls mit Dateityp-Färbung
-├── parse.cpp      # Input-Parsing, Pipes, Redirect, Quote-Handling
-├── execute.cpp    # Prozessausführung, Pipes, I/O Umleitung
-├── config.cpp     # ~/.myshrc laden und speichern
-├── git.cpp        # Git-Erkennung für Prompt
-├── startup.cpp    # Startup-Animation
-├── test.sh        # automatisierte Tests
-├── example.myshrc # Beispiel-Konfiguration
+├── include/
+│   └── shell.hpp       # Deklarationen, Farb- und Konstanten-Definitionen
+├── src/
+│   ├── main.cpp        # Hauptschleife, Prompt-Aufbau
+│   ├── builtins.cpp    # Built-in Befehle (cd, export, alias, sf, sd, ...)
+│   ├── parse.cpp       # Input-Parsing, Pipes, Redirect, Quote-Handling
+│   ├── execute.cpp     # Prozessausführung, Pipes, I/O Umleitung
+│   ├── process.cpp     # Job-Verwaltung, Hintergrundprozesse
+│   ├── config.cpp      # ~/.myshrc laden und speichern
+│   ├── git.cpp         # Git-Erkennung für Prompt
+│   ├── ls.cpp          # eigenes ls mit Dateityp-Färbung
+│   └── startup.cpp     # Startup-Animation
+├── tests/
+│   └── shell_tests.cpp
+├── examples/
+│   └── example.myshrc  # Beispiel-Konfiguration
+├── benchmark-results/
 └── Makefile
 ```
 </details>

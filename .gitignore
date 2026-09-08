@@ -1,7 +1,3 @@
-# Kompilierte Binary
-shell
-shell_tests
-
 # macOS
 .DS_Store
 
@@ -16,3 +12,17 @@ Doxyfile
 html
 latex
 stderr
+
+# Build-Artefakte
+shell
+shell_tests
+compile_commands.json
+.cache/
+
+# Analyse-Output
+valgrind.log
+*.log
+
+# Testdaten
+cmds.txt
+exit.txt

@@ -1,38 +1,45 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-SHELL_PATH="./shell"
+SHELL_PATH="./mysh"
+[[ -x "$SHELL_PATH" ]] || { echo "Binary fehlt: $SHELL_PATH"; exit 1; }
+command -v hyperfine >/dev/null || { echo "hyperfine fehlt"; exit 1; }
 
-echo "=========================================="
-echo "        mysh Benchmark Suite"
-echo "=========================================="
+TMP=$(mktemp -d)
+trap 'rm -rf "$TMP"' EXIT
+echo exit > "$TMP/exit.txt"
+printf 'pwd\nexit\n'       > "$TMP/pwd.txt"
+printf 'echo hello\nexit\n' > "$TMP/echo.txt"
+printf 'ls\nexit\n'        > "$TMP/ls.txt"
 
-# 1. STARTUP ZEIT
-echo ""
-echo "1. Startup Zeit:"
-hyperfine --warmup 3 "$SHELL_PATH <<< 'exit'" --export-markdown startup.md
-cat startup.md
+echo "=== 1. Startup vs. Referenz-Shells ==="
+hyperfine -N --warmup 20 --input "$TMP/exit.txt" \
+  "$SHELL_PATH" /bin/dash /bin/bash /bin/zsh \
+  --export-markdown "$TMP/startup.md" 2>/dev/null || \
+hyperfine -N --warmup 20 --input "$TMP/exit.txt" \
+  "$SHELL_PATH" /bin/bash --export-markdown "$TMP/startup.md"
 
-# 2. CPU & RAM mit /usr/bin/time
-echo ""
-echo "2. CPU & RAM Verbrauch:"
-/usr/bin/time -l $SHELL_PATH <<< 'exit' 2>&1 | grep -E "real|user|sys|maximum resident"
+echo -e "\n=== 2. Builtin vs. fork+exec ==="
+hyperfine -N --warmup 20 \
+  -n "pwd (builtin)"  --input "$TMP/pwd.txt"  "$SHELL_PATH" \
+  -n "echo (builtin)" --input "$TMP/echo.txt" "$SHELL_PATH" \
+  -n "ls (extern)"    --input "$TMP/ls.txt"   "$SHELL_PATH"
 
-# 3. BEFEHLE TESTEN
-echo ""
-echo "3. Befehl Performance (ls, pwd, echo):"
-hyperfine --warmup 3 \
-  "$SHELL_PATH <<< 'ls'" \
-  "$SHELL_PATH <<< 'pwd'" \
-  "$SHELL_PATH <<< 'echo hello'" \
-  --export-markdown commands.md
-cat commands.md
+echo -e "\n=== 3. Ressourcen ==="
+if [[ "$(uname)" == "Darwin" ]]; then
+  /usr/bin/time -l "$SHELL_PATH" < "$TMP/exit.txt" 2>&1 \
+    | grep -E "real|maximum resident"
+  echo "(RSS in Bytes)"
+else
+  /usr/bin/time -v "$SHELL_PATH" < "$TMP/exit.txt" 2>&1 \
+    | grep -E "Elapsed|Maximum resident"
+  echo "(RSS in KB)"
+fi
 
-# 4. LEAKS mit leaks (Mac built-in)
-echo ""
-echo "4. Memory Leaks:"
-leaks --atExit -- $SHELL_PATH <<< 'exit'
-
-echo ""
-echo "=========================================="
-echo "        Fertig!"
-echo "=========================================="
+echo -e "\n=== 4. Speicher ==="
+if [[ "$(uname)" == "Darwin" ]]; then
+  leaks --atExit -- "$SHELL_PATH" < "$TMP/exit.txt" | tail -5
+else
+  valgrind --leak-check=full --error-exitcode=1 \
+    "$SHELL_PATH" < "$TMP/exit.txt" 2>&1 | tail -15
+fi
