@@ -27,3 +27,4 @@ valgrind.log
 cmds.txt
 exit.txt
 .serena
+!compile_flags.txt
