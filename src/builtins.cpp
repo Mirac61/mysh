@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 
-int run_builtin(char **args, int anzahl_args, char *alias_copy) {
+int run_builtin(char **args, int, char *alias_copy) {
   if (args[0] == NULL) {
     return 0;
   }
@@ -124,7 +124,11 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     if (!editor) {
       editor = (char *)"nvim";
     }
-    snprintf(cmd, sizeof(cmd), "%s %s", editor, result);
+    int n = snprintf(cmd, sizeof(cmd), "%s %s", editor, result);
+    if (n < 0 || n >= (int)sizeof(cmd)) {
+      fprintf(stderr, "sf: Pfad zu lang\n");
+      return 1;
+    }
     parse(cmd, exec_args);
     execute(exec_args, background);
     return 1;

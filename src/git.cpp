@@ -5,22 +5,25 @@
 
 int find_git_root(const char *cwd, char *git_path) {
   char current[1024];
-  strncpy(current, cwd, sizeof(current));
+  snprintf(current, sizeof(current), "%s", cwd);
 
   while (strcmp(current, "/") != 0) {
-    snprintf(git_path, 1024, "%s/.git", current);
+    int n = snprintf(git_path, 1024, "%s/.git", current);
+    if (n < 0 || n >= 1024) {
+      return 0;
+    }
     struct stat st;
     if (stat(git_path, &st) == 0) {
       return 1;
     }
 
     char temp[1024];
-    strncpy(temp, current, sizeof(temp));
+    snprintf(temp, sizeof(temp), "%s", current);
     char *parent = dirname(temp);
     if (strcmp(parent, current) == 0) {
       break;
     }
-    strncpy(current, parent, sizeof(current));
+    snprintf(current, sizeof(current), "%s", parent);
   }
   return 0;
 }
@@ -57,8 +60,8 @@ void get_time(char *buf) {
   strftime(buf, 6, "%H:%M", t);
 }
 
-int get_git_status(const char *git_path) {
-  FILE *file = popen("git status --porcelain", "r");
+int get_git_status(const char *) {
+  FILE *file = popen("git --no-optional-locks status --porcelain -uno 2>/dev/null", "r");
   if (!file) {
     return 1;
   }

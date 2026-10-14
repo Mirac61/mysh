@@ -165,7 +165,6 @@ void glitch_animation(int clear_after) {
 
   const char *glitch_chars = "!@#$%^&*<>?/\\|~`+=[]{}";
   int logo_zeilen = 6;
-  int cols = 80;
   int logo_x = 20;
   int logo_y = 8;
 

@@ -114,7 +114,7 @@ void run_command(char *input, char *alias_copy) {
           break;
         }
         char tmp[1024];
-        strncpy(tmp, and_befehle[a], 1024);
+        snprintf(tmp, sizeof(tmp), "%s", and_befehle[a]);
         char *args[MAX_ARGS];
         parse(tmp, args);
         expand_tilde(args);
@@ -137,7 +137,7 @@ void run_command(char *input, char *alias_copy) {
           break;
         }
         char tmp[1024];
-        strncpy(tmp, or_befehle[o], 1024);
+        snprintf(tmp, sizeof(tmp), "%s", or_befehle[o]);
         char *args[MAX_ARGS];
         parse(tmp, args);
         expand_tilde(args);

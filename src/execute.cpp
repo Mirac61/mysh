@@ -9,6 +9,7 @@ int execute(char **args, bool background) {
   sigaddset(&mask, SIGCHLD);
   sigprocmask(SIG_BLOCK, &mask, &oldmask);
 
+  fflush(stdout);
   pid_t pid = fork();
   if (pid < 0) {
     perror("fork");
@@ -20,7 +21,7 @@ int execute(char **args, bool background) {
     if (execvp(args[0], args) == -1) {
       perror(args[0]);
     }
-    exit(1);
+    _exit(127);
   }
   if (background) {
     jobs[job_count].pid = pid;
@@ -48,6 +49,7 @@ void execute_pipe(char **befehle, int anzahl) {
   }
 
   for (int j = 0; j < anzahl; j++) {
+    fflush(stdout);
     pid_t pid = fork();
     if (pid == 0) {
       if (j > 0) {
@@ -65,7 +67,7 @@ void execute_pipe(char **befehle, int anzahl) {
       expand_variables(args);
       execvp(args[0], args);
       perror(args[0]);
-      exit(1);
+      _exit(127);
     }
   }
 
@@ -78,6 +80,7 @@ void execute_pipe(char **befehle, int anzahl) {
 }
 
 void execute_redirect(char **args, char *datei, char type) {
+  fflush(stdout);
   pid_t pid = fork();
   if (pid == 0) {
     int fd;
@@ -91,7 +94,7 @@ void execute_redirect(char **args, char *datei, char type) {
 
     if (fd < 0) {
       perror(datei);
-      exit(1);
+      _exit(1);
     }
     dup2(fd, (type == 'i')   ? STDIN_FILENO
              : (type == 'e') ? STDERR_FILENO
@@ -99,7 +102,7 @@ void execute_redirect(char **args, char *datei, char type) {
     close(fd);
     execvp(args[0], args);
     perror(args[0]);
-    exit(1);
+    _exit(127);
   } else {
     wait(NULL);
   }
@@ -122,6 +125,7 @@ void execute_output(char **befehle, int anzahl, char *result, int result_size) {
   }
 
   for (int j = 0; j < anzahl; j++) {
+    fflush(stdout);
     pid_t pid = fork();
     if (pid == 0) {
       // stdin vom vorherigen Prozess lesen
@@ -151,7 +155,7 @@ void execute_output(char **befehle, int anzahl, char *result, int result_size) {
       parse_simple(befehle[j], args);
       execvp(args[0], args);
       perror(args[0]);
-      exit(1);
+      _exit(127);
     }
   }
 

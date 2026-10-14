@@ -21,7 +21,6 @@ int accent_color_term = DEFAULT_ACCENT_COLOR_TERM;
 bool background = false;
 Job jobs[MAX_JOBS];
 int job_count = 0;
-int status = 0;
 bool interactive = isatty(STDIN_FILENO);
 
 void sigchld_handler(int) {
