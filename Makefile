@@ -1,7 +1,7 @@
 CXX = clang++
 CXXFLAGS = -std=c++23 -O2 -Wall -Wextra
 TARGET = shell
-SRCS = src/main.cpp src/ls.cpp src/parse.cpp src/execute.cpp src/config.cpp src/git.cpp src/startup.cpp src/builtins.cpp src/process.cpp
+SRCS = src/main.cpp src/ls.cpp src/parse.cpp src/execute.cpp src/config.cpp src/git.cpp src/startup.cpp src/builtins.cpp src/process.cpp src/history.cpp
 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)

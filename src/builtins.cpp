@@ -10,10 +10,6 @@ int run_builtin(char **args, int, char *alias_copy) {
   if (strcmp(args[0], "exit") == 0) {
     printf("\033[0m");
     printf("Bye!\n");
-    for (int i = 0; i < history_count; i++) {
-      free(myhistory[i]);
-      myhistory[i] = NULL;
-    }
     for (int i = 0; i < alias_count; i++) {
       free(aliases[i].name);
       free(aliases[i].value);
@@ -53,8 +49,28 @@ int run_builtin(char **args, int, char *alias_copy) {
   }
 
   if (strcmp(args[0], "history") == 0) {
-    for (int i = 0; i < history_count; i++)
-      printf("%d  %s\n", i + 1, myhistory[i]);
+    // interaktiv: alten Befehl aussuchen und direkt ausführen.
+    // Der Guard verhindert, dass ein gewähltes "history" den Picker erneut
+    // öffnet.
+    static bool in_history_pick = false;
+    if (interactive && !in_history_pick && history_count() > 0) {
+      in_history_pick = true;
+      char *choice = history_pick();
+      if (choice != NULL) {
+        char picked_copy[1024];
+        snprintf(picked_copy, sizeof(picked_copy), "%s", choice);
+        printf("%s\n", choice);
+        history_add(choice);
+        run_command(choice, picked_copy);
+        free(choice);
+      }
+      in_history_pick = false;
+      return 1;
+    }
+    // sonst (Pipe, Test, kein fzf) einfach nummeriert ausgeben
+    for (int i = 1; history_at(i); i++) {
+      printf("%d  %s\n", i, history_at(i));
+    }
     return 1;
   }
 

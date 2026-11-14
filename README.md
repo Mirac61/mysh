@@ -17,7 +17,7 @@
 - **`echo`** — mit Variablen-Support (`$HOME`, `$PATH`, ...)
 - **`export`** — Umgebungsvariablen setzen
 - **`alias`** — Abkürzungen definieren, werden in `~/.myshrc` gespeichert
-- **`history`** — alle Befehle der Session anzeigen
+- **`history`** — alte Befehle per fzf auswählen und direkt ausführen (gespeichert in `~/.mysh_history`)
 - **`config`** — öffnet `~/.myshrc` direkt in nvim
 - **`sf [filter]`** — Datei fuzzy suchen und in `$EDITOR` öffnen
 - **`sd [filter]`** — Ordner fuzzy suchen und direkt navigieren
@@ -25,7 +25,7 @@
 ### Shell-Funktionen
 - Pipes `|`, Sequenz `;`, bedingte Ausführung `&&` / `||`
 - I/O Umleitung `>`, `>>`, `<`
-- Tilde-Expansion, Command History, Tab Autocomplete
+- Tilde-Expansion, persistente Command History (`!n` führt Eintrag n aus), Tab Autocomplete
 - Quoted Arguments, Ctrl+C
 
 ---
@@ -172,6 +172,10 @@ ls > output.txt
 make && ./shell
 cd /nicht/vorhanden || echo "Verzeichnis nicht gefunden"
 
+# History
+history        # alten Befehl in fzf auswählen und ausführen
+!42            # Eintrag 42 aus der History ausführen
+
 # Aliases und Variablen
 alias ll="ls -la"
 export NAME=Mirac
@@ -192,6 +196,7 @@ mysh/
 ├── src/
 │   ├── main.cpp        # Hauptschleife, Prompt-Aufbau
 │   ├── builtins.cpp    # Built-in Befehle (cd, export, alias, sf, sd, ...)
+│   ├── history.cpp     # History laden, speichern und auswählen
 │   ├── parse.cpp       # Input-Parsing, Pipes, Redirect, Quote-Handling
 │   ├── execute.cpp     # Prozessausführung, Pipes, I/O Umleitung
 │   ├── process.cpp     # Job-Verwaltung, Hintergrundprozesse
