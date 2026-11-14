@@ -2,17 +2,14 @@
 #include <cstdlib>
 #include <cstring>
 
-int run_builtin(char **args, int anzahl_args, char *alias_copy) {
-  if (args[0] == NULL)
+int run_builtin(char **args, int, char *alias_copy) {
+  if (args[0] == NULL) {
     return 0;
+  }
 
   if (strcmp(args[0], "exit") == 0) {
     printf("\033[0m");
     printf("Bye!\n");
-    for (int i = 0; i < history_count; i++) {
-      free(myhistory[i]);
-      myhistory[i] = NULL;
-    }
     for (int i = 0; i < alias_count; i++) {
       free(aliases[i].name);
       free(aliases[i].value);
@@ -23,8 +20,9 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
   if (strcmp(args[0], "cd") == 0) {
     if (args[1] == NULL) {
       char *home = getenv("HOME");
-      if (home)
+      if (home) {
         chdir(home);
+      }
     } else if (chdir(args[1]) != 0) {
       printf(RED);
       perror("cd");
@@ -51,8 +49,28 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
   }
 
   if (strcmp(args[0], "history") == 0) {
-    for (int i = 0; i < history_count; i++)
-      printf("%d  %s\n", i + 1, myhistory[i]);
+    // interaktiv: alten Befehl aussuchen und direkt ausführen.
+    // Der Guard verhindert, dass ein gewähltes "history" den Picker erneut
+    // öffnet.
+    static bool in_history_pick = false;
+    if (interactive && !in_history_pick && history_count() > 0) {
+      in_history_pick = true;
+      char *choice = history_pick();
+      if (choice != NULL) {
+        char picked_copy[1024];
+        snprintf(picked_copy, sizeof(picked_copy), "%s", choice);
+        printf("%s\n", choice);
+        history_add(choice);
+        run_command(choice, picked_copy);
+        free(choice);
+      }
+      in_history_pick = false;
+      return 1;
+    }
+    // sonst (Pipe, Test, kein fzf) einfach nummeriert ausgeben
+    for (int i = 1; history_at(i); i++) {
+      printf("%d  %s\n", i, history_at(i));
+    }
     return 1;
   }
 
@@ -102,24 +120,31 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     char *exec_args[MAX_ARGS];
 
     // mit Filter nur passende Dateien anzeigen
-    if (args[1] != NULL)
+    if (args[1] != NULL) {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type f -name *%s*",
                args[1]);
-    else
+    } else {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type f");
+    }
 
     char *befehle[2] = {find_cmd, (char *)"fzf"};
     execute_output(befehle, 2, result, sizeof(result));
 
     // User hat ESC gedrückt oder nichts ausgewählt
-    if (strlen(result) == 0)
+    if (strlen(result) == 0) {
       return 1;
+    }
 
     // $EDITOR benutzen, fallback auf nvim
     char *editor = getenv("EDITOR");
-    if (!editor)
+    if (!editor) {
       editor = (char *)"nvim";
-    snprintf(cmd, sizeof(cmd), "%s %s", editor, result);
+    }
+    int n = snprintf(cmd, sizeof(cmd), "%s %s", editor, result);
+    if (n < 0 || n >= (int)sizeof(cmd)) {
+      fprintf(stderr, "sf: Pfad zu lang\n");
+      return 1;
+    }
     parse(cmd, exec_args);
     execute(exec_args, background);
     return 1;
@@ -130,17 +155,19 @@ int run_builtin(char **args, int anzahl_args, char *alias_copy) {
     char result[1024] = {0};
 
     // mit Filter nur passende Ordner anzeigen
-    if (args[1] != NULL)
+    if (args[1] != NULL) {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type d -name *%s*",
                args[1]);
-    else
+    } else {
       snprintf(find_cmd, sizeof(find_cmd), "find . -type d");
+    }
 
     char *befehle[2] = {find_cmd, (char *)"fzf"};
     execute_output(befehle, 2, result, sizeof(result));
 
-    if (strlen(result) > 0)
+    if (strlen(result) > 0) {
       chdir(result);
+    }
     return 1;
   }
 

@@ -2,8 +2,6 @@
 #include <cstdlib>
 #include <cstring>
 
-char *myhistory[MAX_HISTORY];
-int history_count = 0;
 Alias aliases[MAX_ALIASES];
 int alias_count = 0;
 
@@ -21,7 +19,6 @@ int accent_color_term = DEFAULT_ACCENT_COLOR_TERM;
 bool background = false;
 Job jobs[MAX_JOBS];
 int job_count = 0;
-int status = 0;
 bool interactive = isatty(STDIN_FILENO);
 
 void sigchld_handler(int) {
@@ -36,7 +33,7 @@ int main() {
   char branch[256] = "";
 
   load_config();
-  // load_history();
+  history_load();
 
   if (interactive) {
     rl_bind_key('\t', rl_complete);
@@ -100,8 +97,22 @@ int main() {
         input[len - 1] = '\0';
       }
     }
-    if (input == NULL)
+    if (input == NULL) {
       break;
+    }
+
+    // !n führt Befehl n aus der History aus
+    if (input[0] == '!') {
+      const char *alt = history_at(atoi(input + 1));
+      if (!alt) {
+        fprintf(stderr, "%s: nicht in der History\n", input);
+        free(input);
+        continue;
+      }
+      printf("%s\n", alt);
+      free(input);
+      input = strdup(alt);
+    }
 
     if (strlen(input) > 1023) {
       fprintf(stderr, "Eingabe zu lang (max 1023 Zeichen)\n");
@@ -114,19 +125,13 @@ int main() {
     alias_copy[1023] = '\0';
 
     if (strlen(input) > 0) {
-      add_history(input);
-      // add_to_history(input);
+      history_add(input);
     }
 
     run_command(input, alias_copy);
     free(input);
   }
 
-  // save_history();
-  for (int i = 0; i < history_count; i++) {
-    free(myhistory[i]);
-    myhistory[i] = NULL;
-  }
   for (int i = 0; i < alias_count; i++) {
     free(aliases[i].name);
     free(aliases[i].value);

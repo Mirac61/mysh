@@ -9,6 +9,7 @@ int execute(char **args, bool background) {
   sigaddset(&mask, SIGCHLD);
   sigprocmask(SIG_BLOCK, &mask, &oldmask);
 
+  fflush(stdout);
   pid_t pid = fork();
   if (pid < 0) {
     perror("fork");
@@ -17,9 +18,10 @@ int execute(char **args, bool background) {
   }
   if (pid == 0) {
     sigprocmask(SIG_SETMASK, &oldmask, NULL);
-    if (execvp(args[0], args) == -1)
+    if (execvp(args[0], args) == -1) {
       perror(args[0]);
-    exit(1);
+    }
+    _exit(127);
   }
   if (background) {
     jobs[job_count].pid = pid;
@@ -47,12 +49,15 @@ void execute_pipe(char **befehle, int anzahl) {
   }
 
   for (int j = 0; j < anzahl; j++) {
+    fflush(stdout);
     pid_t pid = fork();
     if (pid == 0) {
-      if (j > 0)
+      if (j > 0) {
         dup2(pipes[j - 1][0], STDIN_FILENO);
-      if (j < anzahl - 1)
+      }
+      if (j < anzahl - 1) {
         dup2(pipes[j][1], STDOUT_FILENO);
+      }
       for (int k = 0; k < anzahl - 1; k++) {
         close(pipes[k][0]);
         close(pipes[k][1]);
@@ -62,7 +67,7 @@ void execute_pipe(char **befehle, int anzahl) {
       expand_variables(args);
       execvp(args[0], args);
       perror(args[0]);
-      exit(1);
+      _exit(127);
     }
   }
 
@@ -75,19 +80,21 @@ void execute_pipe(char **befehle, int anzahl) {
 }
 
 void execute_redirect(char **args, char *datei, char type) {
+  fflush(stdout);
   pid_t pid = fork();
   if (pid == 0) {
     int fd;
-    if (type == 'o' || type == 'e')
+    if (type == 'o' || type == 'e') {
       fd = open(datei, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    else if (type == 'a')
+    } else if (type == 'a') {
       fd = open(datei, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    else
+    } else {
       fd = open(datei, O_RDONLY);
+    }
 
     if (fd < 0) {
       perror(datei);
-      exit(1);
+      _exit(1);
     }
     dup2(fd, (type == 'i')   ? STDIN_FILENO
              : (type == 'e') ? STDERR_FILENO
@@ -95,7 +102,7 @@ void execute_redirect(char **args, char *datei, char type) {
     close(fd);
     execvp(args[0], args);
     perror(args[0]);
-    exit(1);
+    _exit(127);
   } else {
     wait(NULL);
   }
@@ -118,19 +125,23 @@ void execute_output(char **befehle, int anzahl, char *result, int result_size) {
   }
 
   for (int j = 0; j < anzahl; j++) {
+    fflush(stdout);
     pid_t pid = fork();
     if (pid == 0) {
       // stdin vom vorherigen Prozess lesen
-      if (j > 0)
+      if (j > 0) {
         dup2(pipes[j - 1][0], STDIN_FILENO);
+      }
 
       // stdout in nächste Pipe schreiben
-      if (j < anzahl - 1)
+      if (j < anzahl - 1) {
         dup2(pipes[j][1], STDOUT_FILENO);
+      }
 
       // letzter Prozess schreibt in output_pipe statt stdout
-      if (j == anzahl - 1)
+      if (j == anzahl - 1) {
         dup2(output_pipe[1], STDOUT_FILENO);
+      }
 
       // alle Pipes schließen – Kind braucht sie nicht mehr
       for (int k = 0; k < anzahl - 1; k++) {
@@ -144,7 +155,7 @@ void execute_output(char **befehle, int anzahl, char *result, int result_size) {
       parse_simple(befehle[j], args);
       execvp(args[0], args);
       perror(args[0]);
-      exit(1);
+      _exit(127);
     }
   }
 

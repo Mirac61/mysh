@@ -11,11 +11,9 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <readline/history.h>
 #include <readline/readline.h>
 
 #define MAX_ARGS 64
-#define MAX_HISTORY 100
 #define MAX_ALIASES 50
 
 #define DEFAULT_COLOR_FOLDER 17
@@ -54,9 +52,6 @@
 #define PL_RIGHT "\ue0b0"
 #define PL_LEFT "\ue0b2"
 
-extern char *myhistory[MAX_HISTORY];
-extern int history_count;
-
 typedef struct {
   char *name;
   char *value;
@@ -89,6 +84,7 @@ extern int accent_color;
 extern int accent_color_term;
 
 extern bool background;
+extern bool interactive;
 
 // ls.cpp
 void my_ls(const char *path, bool show_all, bool show_long);
@@ -135,3 +131,10 @@ void process_input(char *input, char *alias_copy);
 void run_command(char *cmd, char *alias_copy);
 void print_jobs();
 void remove_finished_jobs();
+
+// history.cpp
+void history_load();
+void history_add(const char *line);
+int history_count();
+const char *history_at(int n);
+char *history_pick();
